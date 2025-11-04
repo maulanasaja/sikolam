@@ -172,19 +172,13 @@
       </svg>
       <span>Kelola Pengguna</span>
      </a>
-     <a href="#" data-page="packages" id="packagesMenuSidebar" class="nav-link hidden flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10m0 0h16v-4M4 17h16m-4-10H8m8 0v4m0 0H8m8 0h4m-4-4V7M8 7v4m0 0H4"></path>
-      </svg>
-      <span>Kelola Paket</span>
-     </a>
      <a href="#" data-page="staff-activity-log" id="staffActivityLogMenuSidebar" class="nav-link hidden flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
       <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
       </svg>
       <span>Log Aktivitas Staff</span>
      </a>
-    </nav>
+     </nav>
     <div class="p-4 border-t border-gray-200">
      <div class="flex items-center space-x-3 px-4 py-3 bg-gray-50 rounded-lg mb-2">
       <div class="h-10 w-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
@@ -241,15 +235,9 @@
       </svg>
       <span class="text-xs mt-1">Users</span>
      </a>
-     <a href="#" data-page="packages" id="packagesMenuMobile" class="nav-link-mobile hidden flex-col items-center justify-center h-full text-gray-600 hover:text-blue-600 transition-colors">
-      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10m0 0h16v-4M4 17h16m-4-10H8m8 0v4m0 0H8m8 0h4m-4-4V7M8 7v4m0 0H4"></path>
-      </svg>
-      <span class="text-xs mt-1">Paket</span>
-     </a>
      <a href="#" data-page="staff-activity-log" id="staffActivityLogMenuMobile" class="nav-link-mobile hidden flex-col items-center justify-center h-full text-gray-600 hover:text-blue-600 transition-colors">
       <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
       </svg>
       <span class="text-xs mt-1">Log Staff</span>
      </a>
@@ -562,94 +550,62 @@
       </div>
      </div>
     </div>
-    <div id="packagesPage" class="page-content hidden p-4 md:p-8">
-     <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-      <div>
-       <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Kelola Paket Peralatan</h2>
-       <p class="text-gray-600 mt-1">Buat dan kelola paket barang untuk kegiatan</p>
-      </div>
-      <button id="addPackageBtn" class="flex items-center justify-center space-x-2 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors shadow-sm">
-       <svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-       </svg>
-       <span>Tambah Paket</span>
-      </button>
-     </div>
-     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-      <div class="overflow-x-auto">
-       <table class="w-full">
-        <thead class="bg-gray-50 border-b border-gray-200">
-         <tr>
-          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">ID Paket</th>
-          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Nama Paket</th>
-          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Detail Barang</th>
-          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
-         </tr>
-        </thead>
-        <tbody id="packagesTableBody" class="divide-y divide-gray-200">
-         <tr>
-          <td colspan="4" class="px-6 py-8 text-center text-gray-500">Memuat data...</td>
-         </tr>
-        </tbody>
-       </table>
-      </div>
-     </div>
-    </div>
     <div id="staff-activity-logPage" class="page-content hidden p-4 md:p-8">
-     <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-      <div>
-       <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Log Aktivitas Staff</h2>
-       <p class="text-gray-600 mt-1">Lacak kegiatan yang ditugaskan dan diselesaikan oleh Staff</p>
+      <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Log Aktivitas Staff</h2>
+          <p class="text-gray-600 mt-1">Lacak kegiatan yang ditugaskan dan diselesaikan oleh Staff</p>
+        </div>
+        <button id="refreshStaffActivityLogBtn" class="flex items-center justify-center space-x-2 px-4 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors shadow-sm">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          <span>Refresh</span>
+        </button>
       </div>
-      <button id="refreshStaffActivityLogBtn" class="flex items-center justify-center space-x-2 px-4 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors shadow-sm">
-       <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-       </svg>
-       <span>Refresh</span>
-      </button>
-     </div>
-     <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6">
-      <h3 class="text-md font-semibold text-gray-800 mb-3">Filter Log Aktivitas</h3>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-       <div class="flex-1">
-        <label for="filterLogStart" class="block text-xs font-medium text-gray-700">Tanggal Mulai</label>
-        <input type="date" id="filterLogStart" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500">
-       </div>
-       <div class="flex-1">
-        <label for="filterLogEnd" class="block text-xs font-medium text-gray-700">Tanggal Selesai</label>
-        <input type="date" id="filterLogEnd" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500">
-       </div>
-       <div class="flex-1">
-        <label for="filterStaff" class="block text-xs font-medium text-gray-700">Nama Staff</label>
-        <select id="filterStaff" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500">
-         <option value="">Semua Staff</option>
-        </select>
-       </div>
-       <button id="applyLogFilterBtn" class="sm:self-end w-full sm:w-auto px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors shadow-sm mt-auto">Terapkan Filter</button>
+
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6">
+        <h3 class="text-md font-semibold text-gray-800 mb-3">Filter Log Aktivitas</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div class="flex-1">
+            <label for="filterLogStart" class="block text-xs font-medium text-gray-700">Tanggal Mulai</label>
+            <input type="date" id="filterLogStart" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500">
+          </div>
+          <div class="flex-1">
+            <label for="filterLogEnd" class="block text-xs font-medium text-gray-700">Tanggal Selesai</label>
+            <input type="date" id="filterLogEnd" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500">
+          </div>
+          <div class="flex-1">
+            <label for="filterStaff" class="block text-xs font-medium text-gray-700">Nama Staff</label>
+            <select id="filterStaff" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500">
+              <option value="">Semua Staff</option>
+            </select>
+          </div>
+          <button id="applyLogFilterBtn" class="sm:self-end w-full sm:w-auto px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors shadow-sm mt-auto">Terapkan Filter</button>
+        </div>
       </div>
-     </div>
-     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-      <div class="overflow-x-auto">
-       <table class="w-full">
-        <thead class="bg-gray-50 border-b border-gray-200">
-         <tr>
-          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">ID Log</th>
-          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Nama Kegiatan</th>
-          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Staff</th>
-          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tanggal Kegiatan</th>
-          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-         </tr>
-        </thead>
-        <tbody id="staffActivityLogTableBody" class="divide-y divide-gray-200">
-         <tr>
-          <td colspan="5" class="px-6 py-8 text-center text-gray-500">Memuat data...</td>
-         </tr>
-        </tbody>
-       </table>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">ID Log</th>
+                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Nama Kegiatan</th>
+                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Staff</th>
+                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tanggal Kegiatan</th>
+                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+              </tr>
+            </thead>
+            <tbody id="staffActivityLogTableBody" class="divide-y divide-gray-200">
+              <tr>
+                <td colspan="5" class="px-6 py-8 text-center text-gray-500">Memuat data...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-     </div>
     </div>
-   </main>
+    </main>
   </div>
   <div id="barangModal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4">
    <div class="bg-white rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
@@ -731,11 +687,9 @@
        </div>
       </div>
       <div>
-       <label for="packageSelect" class="block text-sm font-medium text-gray-700 mb-1">Pilih Paket Peralatan</label>
-       <select id="packageSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <option value="">-- Tidak Ada Paket --</option>
-        </select>
-       <input type="hidden" id="selectedEquipmentIds" value="">
+       <label class="block text-sm font-medium text-gray-700 mb-2">Peralatan yang Dibutuhkan</label>
+       <div id="equipmentSelection" class="space-y-2 max-h-32 overflow-y-auto border border-gray-300 rounded-lg p-3">
+       </div>
       </div>
      </div>
      <div>
@@ -787,30 +741,6 @@
     </form>
    </div>
   </div>
-  <div id="packageModal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4">
-   <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-    <div class="p-6 border-b border-gray-200">
-     <h3 class="text-xl font-bold text-gray-900" id="packageModalTitle">Tambah Paket Peralatan</h3>
-    </div>
-    <form id="packageForm" class="p-6 space-y-4">
-     <input type="hidden" id="packageId" />
-     <div>
-      <label for="namaPackage" class="block text-sm font-medium text-gray-700 mb-1">Nama Paket</label>
-      <input type="text" id="namaPackage" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-     </div>
-     <div>
-      <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Barang & Jumlah</label>
-      <div id="packageEquipmentSelection" class="space-y-3 max-h-60 overflow-y-auto border border-gray-300 rounded-lg p-3">
-       <p class="text-gray-500 text-sm text-center">Memuat data barang...</p>
-      </div>
-     </div>
-     <div class="flex space-x-3 pt-4">
-      <button type="button" id="cancelPackageBtn" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">Batal</button>
-      <button type="submit" class="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">Simpan</button>
-     </div>
-    </form>
-   </div>
-  </div>
   <div id="staffDetailModal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4">
    <div class="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
     <div class="p-6 border-b border-gray-200">
@@ -820,13 +750,13 @@
      <div id="kegiatanInfo" class="bg-gray-50 rounded-lg p-4">
      </div>
      <div>
-      <h4 class="text-lg font-semibold text-gray-900 mb-3">Peralatan yang Dibutuhkan (Sesuai Paket)</h4>
+      <h4 class="text-lg font-semibold text-gray-900 mb-3">Peralatan yang Dibutuhkan</h4>
       <div id="equipmentConfirmation" class="space-y-3">
       </div>
      </div>
      <div class="flex space-x-3 pt-4">
       <button type="button" id="cancelStaffDetailBtn" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">Tutup</button>
-      <button type="button" id="confirmEquipmentBtn" class="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">Konfirmasi Peminjaman Peralatan</button>
+      <button type="button" id="confirmEquipmentBtn" class="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">Konfirmasi Penggunaan Peralatan</button>
      </div>
     </div>
    </div>
@@ -857,8 +787,7 @@
         equipment_confirmations: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRy4_iUJxIZjn1vyzFKDRH6_Iai0y8jDf39FgefnC_PJQH59ayCvip73CwbTKxf41I_srBLdbLtHDZP/pub?gid=9446231&single=true&output=csv',
         barang_keluar: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRy4_iUJxIZjn1vyzFKDRH6_Iai0y8jDf39FgefnC_PJQH59ayCvip73CwbTKxf41I_srBLdbLtHDZP/pub?gid=2000721670&single=true&output=csv',
         barang_masuk: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRy4_iUJxIZjn1vyzFKDRH6_Iai0y8jDf39FgefnC_PJQH59ayCvip73CwbTKxf41I_srBLdbLtHDZP/pub?gid=1746769660&single=true&output=csv',
-        staff_activity_log: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRy4_iUJxIZjn1vyzFKDRH6_Iai0y8jDf39FgefnC_PJQH59ayCvip73CwbTKxf41I_srBLdbLtHDZP/pub?gid=1862749988&single=true&output=csv', 
-        packages: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRy4_iUJxIZjn1vyzFKDRH6_Iai0y8jDf39FgefnC_PJQH59ayCvip73CwbTKxf41I_srBLdbLtHDZP/pub?gid=741401137&single=true&output=csv' // GID BARU UNTUK PACKAGES!
+        staff_activity_log: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRy4_iUJxIZjn1vyzFKDRH6_Iai0y8jDf39FgefnC_PJQH59ayCvip73CwbTKxf41I_srBLdbLtHDZP/pub?gid=1862749988&single=true&output=csv' // **GANTI DENGAN GID staff_activity_log BARU**
     };
 
     // State Management
@@ -871,9 +800,8 @@
     let equipmentConfirmationsData = [];
     let barangMasukData = [];
     let barangKeluarData = [];
-    let staffActivityLogData = [];
-    let packagesData = []; // BARU
-    
+    let staffActivityLogData = []; // TAMBAHAN: Log Aktivitas Staff
+
     // CSV Parser Function
     function parseCSV(csvText) {
         const lines = csvText.trim().split('\n');
@@ -1008,23 +936,6 @@
                 closeKegiatanModal();
             }
         });
-        
-        // Package Modal (BARU)
-        document.getElementById('addPackageBtn')?.addEventListener('click', function() {
-            openPackageModal();
-        });
-
-        document.getElementById('cancelPackageBtn')?.addEventListener('click', function() {
-            closePackageModal();
-        });
-
-        document.getElementById('packageForm')?.addEventListener('submit', handlePackageSubmit);
-
-        document.getElementById('packageModal')?.addEventListener('click', function(e) {
-            if (e.target === this) {
-                closePackageModal();
-            }
-        });
 
         // User Modal
         document.getElementById('addUserBtn').addEventListener('click', function() {
@@ -1093,8 +1004,6 @@
         window.updateKegiatanStatusAdmin = updateKegiatanStatusAdmin;
         window.editUser = editUser;
         window.deleteUser = deleteUser;
-        window.editPackage = editPackage; // BARU
-        window.deletePackage = deletePackage; // BARU
     }
 
     // Login Handler
@@ -1167,20 +1076,16 @@
         if (currentUser.role === 'admin') {
             document.getElementById('usersMenuSidebar').classList.remove('hidden');
             document.getElementById('usersMenuMobile').classList.remove('hidden');
-            document.getElementById('staffActivityLogMenuSidebar').classList.remove('hidden'); 
-            document.getElementById('staffActivityLogMenuMobile').classList.remove('hidden'); 
-            document.getElementById('packagesMenuSidebar').classList.remove('hidden'); // BARU
-            document.getElementById('packagesMenuMobile').classList.remove('hidden'); // BARU
+            document.getElementById('staffActivityLogMenuSidebar').classList.remove('hidden'); // BARU
+            document.getElementById('staffActivityLogMenuMobile').classList.remove('hidden'); // BARU
             document.getElementById('addBarangBtn').classList.remove('hidden');
             document.getElementById('addKegiatanBtn').classList.remove('hidden');
             document.getElementById('addUserBtn').classList.remove('hidden');
         } else {
             document.getElementById('usersMenuSidebar').classList.add('hidden');
             document.getElementById('usersMenuMobile').classList.add('hidden');
-            document.getElementById('staffActivityLogMenuSidebar').classList.add('hidden'); 
-            document.getElementById('staffActivityLogMenuMobile').classList.add('hidden'); 
-            document.getElementById('packagesMenuSidebar').classList.add('hidden'); // BARU
-            document.getElementById('packagesMenuMobile').classList.add('hidden'); // BARU
+            document.getElementById('staffActivityLogMenuSidebar').classList.add('hidden'); // BARU
+            document.getElementById('staffActivityLogMenuMobile').classList.add('hidden'); // BARU
             document.getElementById('addBarangBtn').classList.add('hidden');
             document.getElementById('addKegiatanBtn').classList.add('hidden');
             document.getElementById('addUserBtn').classList.add('hidden');
@@ -1224,18 +1129,13 @@
                     loadUsers();
                 }
                 break;
-            case 'packages': // BARU
-                if (currentUser.role === 'admin') {
-                    loadPackages();
-                }
-                break;
             case 'barang-masuk':
                 loadBarangMasuk();
                 break;
             case 'barang-keluar':
                 loadBarangKeluar();
                 break;
-            case 'staff-activity-log': 
+            case 'staff-activity-log': // BARU
                 if (currentUser.role === 'admin') {
                     loadStaffActivityLog();
                 }
@@ -1388,58 +1288,6 @@
         }
     }
 
-    // Load Packages (BARU)
-    async function loadPackages() {
-        if (currentUser.role !== 'admin') return;
-
-        try {
-            packagesData = await loadSheetData('packages');
-            barangData = await loadSheetData('barang'); // Pastikan data barang dimuat untuk detail
-
-            const tbody = document.getElementById('packagesTableBody');
-            
-            if (packagesData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">Belum ada data paket peralatan</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = packagesData.map(item => {
-                let detailHtml = '';
-                try {
-                    const equipmentList = JSON.parse(item.equipment_data);
-                    detailHtml = equipmentList.map(eq => {
-                        const barang = barangData.find(b => b.id_barang === eq.id);
-                        return `<span class="inline-block bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">${barang ? barang.nama_barang : 'ID Barang Tidak Dikenal'} (${eq.jumlah})</span>`;
-                    }).join('');
-                } catch (e) {
-                    detailHtml = '<span class="text-red-500 text-xs">Data Error</span>';
-                }
-
-                return `
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 text-sm text-gray-900">${item.id_paket}</td>
-                    <td class="px-6 py-4 text-sm font-medium text-gray-900">${item.nama_paket}</td>
-                    <td class="px-6 py-4 text-sm text-gray-900">${detailHtml}</td>
-                    <td class="px-6 py-4 text-sm">
-                        <div class="flex space-x-2">
-                            <button onclick="editPackage('${item.id_paket}')" class="text-blue-600 hover:text-blue-800" title="Edit">
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                            </button>
-                            <button onclick="deletePackage('${item.id_paket}', '${item.nama_paket}')" class="text-red-600 hover:text-red-800" title="Hapus">
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                `;
-            }).join('');
-        } catch (error) {
-            console.error('Error loading packages:', error);
-            showToast('Gagal memuat data paket', 'error');
-        }
-    }
-
-
     // Load Kegiatan
     async function loadKegiatan() {
         try {
@@ -1539,7 +1387,7 @@
                         </div>
                     </td>
                 </tr>
-                `}).join('');
+            `}).join('');
         } catch (error) {
             console.error('Error loading kegiatan:', error);
             showToast('Gagal memuat data kegiatan', 'error');
@@ -1619,18 +1467,21 @@
         formData.append('jam_selesai', item.jam_selesai);
         formData.append('status_kegiatan', newStatus);
         
-        // Ambil staff dan package yang sudah ada dari data state
+        // Ambil staff dan equipment yang sudah ada dari data state
+        // Ini penting agar Apps Script tidak menghapus relasi yang tidak sengaja
         const existingStaff = kegiatanStaffData
             .filter(ks => ks.kegiatan_id === item.id_kegiatan)
             .map(ks => ks.staff_id);
         
-        // Asumsi equipment_id adalah ID Paket (hanya satu)
+        // Perlu memuat data kegiatan_equipment lagi jika tidak yakin sudah ter-cache
         const equipmentAssignments = await loadSheetData('kegiatan_equipment');
-        const existingPackageAssignment = equipmentAssignments.find(ke => ke.kegiatan_id === item.id_kegiatan);
-        const existingPackageId = existingPackageAssignment ? existingPackageAssignment.equipment_id : null;
+        const existingEquipment = equipmentAssignments
+            .filter(ke => ke.kegiatan_id === item.id_kegiatan)
+            .map(ke => ke.equipment_id);
 
         formData.append('staff', JSON.stringify(existingStaff));
-        formData.append('equipment', JSON.stringify(existingPackageId ? [existingPackageId] : [])); // Kirim sebagai array
+        formData.append('equipment', JSON.stringify(existingEquipment));
+
 
         try {
             const response = await fetch(SCRIPT_URL, {
@@ -1654,9 +1505,9 @@
         }
     }
 
+
     // Load Barang Masuk
     async function loadBarangMasuk() {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         try {
             const [masukData, allKegiatanData, allUsersData, allKegiatanStaff] = await Promise.all([
                 loadSheetData('barang_masuk'),
@@ -1727,7 +1578,6 @@
 
     // Load Barang Keluar
     async function loadBarangKeluar() {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         try {
             const [keluarData, allKegiatanData, allUsersData, allKegiatanStaff] = await Promise.all([
                 loadSheetData('barang_keluar'),
@@ -1796,7 +1646,6 @@
 
     // Load Staff Activity Log (BARU)
     async function loadStaffActivityLog() {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         if (currentUser.role !== 'admin') return;
 
         try {
@@ -1874,7 +1723,6 @@
     
     // Load Users
     async function loadUsers() {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         if (currentUser.role !== 'admin') return;
 
         try {
@@ -1919,10 +1767,8 @@
         }
     }
 
-
     // Barang Modal Functions
     function openBarangModal(id = null) {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         const modal = document.getElementById('barangModal');
         const form = document.getElementById('barangForm');
         const title = document.getElementById('barangModalTitle');
@@ -1951,12 +1797,10 @@
     }
 
     function closeBarangModal() {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         document.getElementById('barangModal').classList.add('hidden');
     }
 
     async function handleBarangSubmit(e) {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         e.preventDefault();
         showLoading();
 
@@ -2001,12 +1845,10 @@
     }
 
     function editBarang(id) {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         openBarangModal(id);
     }
 
     async function deleteBarang(id) {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         const item = barangData.find(b => b.id_barang === id);
         if (!item) return;
 
@@ -2065,151 +1907,8 @@
         });
     }
 
-
-    // Package Modal Functions (BARU)
-
-    async function openPackageModal(id = null) {
-        const modal = document.getElementById('packageModal');
-        const form = document.getElementById('packageForm');
-        const title = document.getElementById('packageModalTitle');
-        const equipmentContainer = document.getElementById('packageEquipmentSelection');
-        
-        form.reset();
-
-        if (barangData.length === 0) {
-            barangData = await loadSheetData('barang');
-        }
-
-        // Render equipment options with quantity inputs
-        equipmentContainer.innerHTML = barangData.map(item => `
-            <div class="flex items-center space-x-3 p-2 bg-white border border-gray-200 rounded-lg">
-                <input type="number" name="packageEquipmentCount" data-id="${item.id_barang}" min="0" value="0" class="w-20 px-2 py-1 border border-gray-300 rounded-lg text-sm text-center focus:ring-blue-500 focus:border-blue-500">
-                <span class="text-sm font-medium text-gray-700 flex-1">${item.nama_barang} (Total: ${item.jumlah_dimiliki})</span>
-            </div>
-        `).join('');
-
-        if (id) {
-            const item = packagesData.find(p => p.id_paket === id);
-            if (item) {
-                title.textContent = 'Edit Paket Peralatan';
-                document.getElementById('packageId').value = item.id_paket;
-                document.getElementById('namaPackage').value = item.nama_paket;
-                
-                try {
-                    const existingEquipment = JSON.parse(item.equipment_data);
-                    existingEquipment.forEach(eq => {
-                        const input = document.querySelector(`input[data-id="${eq.id}"]`);
-                        if (input) {
-                            input.value = parseInt(eq.jumlah) || 0;
-                        }
-                    });
-                } catch (e) {
-                    console.error('Error parsing equipment data:', e);
-                }
-            }
-        } else {
-            title.textContent = 'Tambah Paket Peralatan';
-            document.getElementById('packageId').value = '';
-        }
-
-        modal.classList.remove('hidden');
-    }
-
-    function closePackageModal() {
-        document.getElementById('packageModal').classList.add('hidden');
-    }
-
-    async function handlePackageSubmit(e) {
-        e.preventDefault();
-        showLoading();
-
-        const isEdit = document.getElementById('packageId').value;
-        const namaPackage = document.getElementById('namaPackage').value;
-        const packageEquipmentInputs = document.querySelectorAll('input[name="packageEquipmentCount"]');
-        const equipmentData = [];
-
-        packageEquipmentInputs.forEach(input => {
-            const id = input.dataset.id;
-            const jumlah = parseInt(input.value) || 0;
-            // Hanya masukkan barang yang jumlahnya lebih dari 0
-            if (jumlah > 0) { 
-                equipmentData.push({ id: id, jumlah: jumlah });
-            }
-        });
-        
-        if (equipmentData.length === 0) {
-            hideLoading();
-            showToast('Paket harus memiliki minimal 1 barang dengan jumlah > 0', 'error');
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('action', isEdit ? 'updatePackage' : 'addPackage');
-        formData.append('id', isEdit);
-        formData.append('nama_paket', namaPackage);
-        formData.append('equipment_data', JSON.stringify(equipmentData));
-
-        try {
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: formData
-            });
-            const result = await response.json();
-            hideLoading();
-
-            if (result.success) {
-                showToast(result.message || 'Data paket berhasil disimpan', 'success');
-                closePackageModal();
-                loadPackages(); 
-            } else {
-                showToast(result.message || 'Gagal menyimpan data paket', 'error');
-            }
-        } catch (error) {
-            hideLoading();
-            showToast('Terjadi kesalahan saat menyimpan data paket', 'error');
-            console.error('Error:', error);
-        }
-    }
-
-    function editPackage(id) {
-        openPackageModal(id);
-    }
-
-    async function deletePackage(id, name) {
-        const confirmDelete = confirm(`Apakah Anda yakin ingin menghapus paket "${name}"?`);
-        if (!confirmDelete) return;
-
-        showLoading();
-
-        try {
-            const formData = new FormData();
-            formData.append('action', 'deletePackage');
-            formData.append('id', id);
-            
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: formData
-            });
-            const result = await response.json();
-            hideLoading();
-
-            if (result.success) {
-                showToast('Paket berhasil dihapus', 'success');
-                loadPackages();
-            } else {
-                showToast('Gagal menghapus paket: ' + result.message, 'error');
-            }
-        } catch (error) {
-            hideLoading();
-            showToast('Terjadi kesalahan', 'error');
-            console.error('Error:', error);
-        }
-    }
-
-
     // Kegiatan Modal Functions
     async function openKegiatanModal(id = null) {
-        // ... (Fungsi dimodifikasi untuk Package) ...
         const modal = document.getElementById('kegiatanModal');
         const form = document.getElementById('kegiatanForm');
         const title = document.getElementById('kegiatanModalTitle');
@@ -2220,7 +1919,7 @@
         // Show/hide admin-only fields
         if (currentUser.role === 'admin') {
             adminFields.classList.remove('hidden');
-            await loadStaffAndEquipmentOptions(); // Load staff dan packages
+            await loadStaffAndEquipmentOptions();
         } else {
             adminFields.classList.add('hidden');
         }
@@ -2238,7 +1937,7 @@
                 document.getElementById('jamSelesai').value = item.jam_selesai;
                 document.getElementById('statusKegiatan').value = item.status_kegiatan;
 
-                // Load existing staff and package selection
+                // Load existing staff and equipment selections
                 if (currentUser.role === 'admin') {
                     await loadExistingSelections(item.id_kegiatan);
                 }
@@ -2253,17 +1952,15 @@
     }
 
     async function loadStaffAndEquipmentOptions() {
-        // ... (Fungsi dimodifikasi untuk memuat Packages) ...
         try {
-            const [allUsers, allPackages] = await Promise.all([
+            const [allUsers, allBarangData] = await Promise.all([
                 loadSheetData('users'),
-                loadSheetData('packages') // Memuat paket
+                loadSheetData('barang')
             ]);
 
-            packagesData = allPackages; // Update global packages data
+            barangData = allBarangData; // Update global barang data
             const staffData = allUsers.filter(user => user.role === 'staff');
 
-            // Render Staff Selection
             const staffContainer = document.getElementById('staffSelection');
             staffContainer.innerHTML = staffData.map(staff => `
                 <label class="flex items-center space-x-2">
@@ -2272,26 +1969,13 @@
                 </label>
             `).join('');
 
-
-            // Render Package Selection (BARU)
-            const packageSelect = document.getElementById('packageSelect');
-            if (packageSelect) {
-                packageSelect.innerHTML = '<option value="">-- Tidak Ada Paket --</option>' + packagesData.map(pkg => `
-                    <option value="${pkg.id_paket}" data-equipment='${pkg.equipment_data}'>${pkg.nama_paket}</option>
-                `).join('');
-
-                // Listener untuk mengupdate hidden field ketika paket dipilih
-                packageSelect.onchange = function() {
-                    const selectedOption = this.options[this.selectedIndex];
-                    const equipmentDataJson = selectedOption.dataset.equipment;
-                    const equipmentList = equipmentDataJson ? JSON.parse(equipmentDataJson) : [];
-                    
-                    // Kita hanya butuh list ID barang untuk disimpan di kegiatan_equipment (relasi 1:N)
-                    // Detail jumlahnya disimpan di package.equipment_data
-                    const equipmentIds = equipmentList.map(eq => eq.id);
-                    document.getElementById('selectedEquipmentIds').value = JSON.stringify(equipmentIds);
-                };
-            }
+            const equipmentContainer = document.getElementById('equipmentSelection');
+            equipmentContainer.innerHTML = barangData.map(item => `
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" name="equipment" value="${item.id_barang}" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <span class="text-sm text-gray-700">${item.nama_barang} (Dimiliki: ${item.jumlah_dimiliki})</span>
+                </label>
+            `).join('');
 
         } catch (error) {
             console.error('Error loading options:', error);
@@ -2299,46 +1983,34 @@
     }
 
     async function loadExistingSelections(kegiatanId) {
-        // ... (Fungsi dimodifikasi untuk Package) ...
         try {
-            // Load all relevant data
-            const [staffAssignments, equipmentAssignments, allPackages] = await Promise.all([
+            const [staffAssignments, equipmentAssignments] = await Promise.all([
                 loadSheetData('kegiatan_staff'),
-                loadSheetData('kegiatan_equipment'), // Tetap ambil ini untuk mendapatkan ID Paket lama (equipment_id akan kita anggap ID Paket)
-                loadSheetData('packages') 
+                loadSheetData('kegiatan_equipment')
             ]);
-
+            
             kegiatanStaffData = staffAssignments;
             kegiatanEquipmentData = equipmentAssignments;
-            packagesData = allPackages;
 
             // Load existing staff assignments
             const assignedStaff = kegiatanStaffData
                 .filter(ks => ks.kegiatan_id === kegiatanId)
                 .map(ks => ks.staff_id);
 
+            // Load existing equipment assignments
+            const assignedEquipment = kegiatanEquipmentData
+                .filter(ke => ke.kegiatan_id === kegiatanId)
+                .map(ke => ke.equipment_id);
+
             // Check existing staff selections
             document.querySelectorAll('input[name="staff"]').forEach(checkbox => {
                 checkbox.checked = assignedStaff.includes(checkbox.value);
             });
 
-            // Load existing package selection (kegiatan_equipment akan menyimpan ID Paket)
-            const assignedPackageAssignment = kegiatanEquipmentData
-                .find(ke => ke.kegiatan_id === kegiatanId);
-            
-            const packageSelect = document.getElementById('packageSelect');
-            if (packageSelect) {
-                const packageId = assignedPackageAssignment ? assignedPackageAssignment.equipment_id : '';
-                packageSelect.value = packageId;
-                
-                // Trigger change event manually to update the hidden field
-                // Gunakan timeout singkat untuk memastikan DOM sudah ter-render
-                setTimeout(() => {
-                    const event = new Event('change');
-                    packageSelect.dispatchEvent(event);
-                }, 50);
-                
-            }
+            // Check existing equipment selections
+            document.querySelectorAll('input[name="equipment"]').forEach(checkbox => {
+                checkbox.checked = assignedEquipment.includes(checkbox.value);
+            });
 
         } catch (error) {
             console.error('Error loading existing selections:', error);
@@ -2346,12 +2018,10 @@
     }
 
     function closeKegiatanModal() {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         document.getElementById('kegiatanModal').classList.add('hidden');
     }
 
     async function handleKegiatanSubmit(e) {
-        // ... (Fungsi dimodifikasi untuk Package) ...
         e.preventDefault();
         showLoading();
 
@@ -2366,15 +2036,13 @@
         formData.append('jam_selesai', document.getElementById('jamSelesai').value);
         formData.append('status_kegiatan', document.getElementById('statusKegiatan').value);
 
-        // Add staff and package selection for admin
+        // Add staff and equipment selections for admin
         if (currentUser.role === 'admin') {
             const selectedStaff = Array.from(document.querySelectorAll('input[name="staff"]:checked')).map(cb => cb.value);
-            // Ambil ID Paket yang dipilih (hanya satu)
-            const selectedPackageId = document.getElementById('packageSelect').value; 
+            const selectedEquipment = Array.from(document.querySelectorAll('input[name="equipment"]:checked')).map(cb => cb.value);
             
-            // equipment sekarang berisi ID Paket
             formData.append('staff', JSON.stringify(selectedStaff));
-            formData.append('equipment', JSON.stringify(selectedPackageId ? [selectedPackageId] : [])); // Kirim ID Paket sebagai array 1 elemen
+            formData.append('equipment', JSON.stringify(selectedEquipment));
         }
 
         try {
@@ -2401,7 +2069,6 @@
 
     // Finish Kegiatan Function
     async function finishKegiatan(id) {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         const kegiatan = kegiatanData.find(k => k.id_kegiatan === id);
         if (!kegiatan) return;
 
@@ -2468,51 +2135,36 @@
 
     // Staff Detail Functions
     async function viewKegiatanDetail(id) {
-        // ... (Fungsi dimodifikasi untuk Package) ...
         try {
             showLoading();
 
             // Load all necessary data concurrently
-            const [equipmentAssignmentData, confirmationsData, allBarangData, allBarangKeluarData, allPackages] = await Promise.all([
+            const [equipmentAssignmentData, confirmationsData, allBarangData, allBarangKeluarData] = await Promise.all([
                 loadSheetData('kegiatan_equipment'),
                 loadSheetData('equipment_confirmations'),
                 loadSheetData('barang'),
-                loadSheetData('barang_keluar'),
-                loadSheetData('packages') // Load paket
+                loadSheetData('barang_keluar') 
             ]);
             
             kegiatanEquipmentData = equipmentAssignmentData;
             equipmentConfirmationsData = confirmationsData;
-            barangData = allBarangData; 
-            packagesData = allPackages;
-
+            barangData = allBarangData; // Update global barang data
+            
             const kegiatan = kegiatanData.find(k => k.id_kegiatan === id);
             if (!kegiatan) return;
 
-            // Get assigned Package ID for this kegiatan (equipment_id dianggap package id)
-            const assignedPackageAssignment = kegiatanEquipmentData.find(ke => ke.kegiatan_id === id);
-            const assignedPackageId = assignedPackageAssignment ? assignedPackageAssignment.equipment_id : null;
-            const assignedPackage = assignedPackageId ? packagesData.find(p => p.id_paket === assignedPackageId) : null;
-            
-            // Ambil detail barang dari paket yang dipilih
-            let assignedEquipmentDetails = [];
-            if (assignedPackage) {
-                try {
-                    assignedEquipmentDetails = JSON.parse(assignedPackage.equipment_data).filter(item => (parseInt(item.jumlah) || 0) > 0);
-                } catch (e) {
-                    console.error('Error parsing package equipment data:', e);
-                }
-            }
+            // Get assigned equipment for this kegiatan
+            const assignedEquipment = kegiatanEquipmentData
+                .filter(ke => ke.kegiatan_id === id)
+                .map(ke => ke.equipment_id);
 
-
-            // Get confirmed equipment by current staff (hanya ID)
-            const confirmedEquipmentIds = equipmentConfirmationsData
+            // Get confirmed equipment by current staff
+            const confirmedEquipment = equipmentConfirmationsData
                 .filter(ec => ec.kegiatan_id === id && ec.staff_id === currentUser.id)
                 .map(ec => ec.equipment_id);
                 
             // Dapatkan jumlah barang yang sudah dipinjam (Barang Keluar) untuk kegiatan ini
             const usedEquipmentCounts = {};
-            const allBarangKeluarData = await loadSheetData('barang_keluar'); // Load di sini untuk data terbaru
             allBarangKeluarData.filter(item => item.kegiatan_id === id).forEach(item => {
                 usedEquipmentCounts[item.equipment_id] = (usedEquipmentCounts[item.equipment_id] || 0) + parseInt(item.jumlah || 1);
             });
@@ -2521,7 +2173,6 @@
             document.getElementById('staffDetailTitle').textContent = `Detail Kegiatan: ${kegiatan.nama_kegiatan}`;
             document.getElementById('kegiatanInfo').innerHTML = `
                 <h4 class="font-semibold text-gray-900 mb-2">${kegiatan.nama_kegiatan}</h4>
-                <p class="text-sm text-blue-600 mb-3 font-semibold">Paket Terpilih: ${assignedPackage ? assignedPackage.nama_paket : 'Tidak Ada Paket'}</p>
                 <div class="grid grid-cols-2 gap-4 text-sm text-gray-600">
                     <div><strong>Jenis:</strong> ${kegiatan.jenis_kegiatan}</div>
                     <div><strong>Lokasi:</strong> ${kegiatan.lokasi_kegiatan}</div>
@@ -2537,63 +2188,51 @@
             
             const isFinalized = kegiatan.status_kegiatan === 'Selesai' || kegiatan.status_kegiatan === 'Dibatalkan';
             
-            if (assignedEquipmentDetails.length > 0) {
-                equipmentContainer.innerHTML = assignedEquipmentDetails.map(packageItem => {
-                    const equipmentId = packageItem.id;
-                    const requiredQuantity = parseInt(packageItem.jumlah) || 0;
+            if (assignedEquipment.length > 0) {
+                equipmentContainer.innerHTML = assignedEquipment.map(equipmentId => {
                     const equipment = barangData.find(b => b.id_barang === equipmentId);
-                    
-                    if (!equipment) return '';
-
-                    // Cek apakah barang yang dipinjam sama dengan package id (sebelumnya hanya 1 id)
-                    const isConfirmed = confirmedEquipmentIds.includes(assignedPackageId);
-                    const currentUsageForThisActivity = usedEquipmentCounts[equipmentId] || 0; 
+                    const isConfirmed = confirmedEquipment.includes(equipmentId);
+                    const currentUsageForThisActivity = usedEquipmentCounts[equipmentId] || 0; // Jumlah barang yang sudah dipinjam untuk kegiatan ini
                     const totalOwned = parseInt(equipment.jumlah_dimiliki) || 0;
                     const totalUsage = parseInt(equipment.jumlah_digunakan) || 0;
                     
                     // Stock that is available, excluding what is currently being used by *this* activity
                     const availableStockExcludingThisActivity = totalOwned - (totalUsage - currentUsageForThisActivity);
-
+                    
                     let confirmationStatus = isConfirmed ? '<span class="text-xs text-green-600 font-medium">Dikonfirmasi</span>' : '';
                     if (currentUsageForThisActivity > 0) {
                         confirmationStatus = '<span class="text-xs text-blue-600 font-medium">Sedang Digunakan</span>';
                     }
-                    
-                    // Cek jika jumlah yang diminta melebihi yang tersedia
-                    const stockWarning = (requiredQuantity > availableStockExcludingThisActivity) 
-                        ? `<p class="text-xs text-red-500 font-semibold">PERINGATAN: Kuantitas (${requiredQuantity}) Melebihi Stok Tersedia (${availableStockExcludingThisActivity})!</p>`
-                        : '';
-                        
-                    return `
-                        <div class="flex items-start space-x-3 p-3 border rounded-lg ${isConfirmed ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}">
+
+                    return equipment ? `
+                        <label class="flex items-center space-x-3 p-3 border rounded-lg ${isConfirmed ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}">
+                            <input type="number" name="confirmEquipment" data-id="${equipmentId}" min="0" max="${availableStockExcludingThisActivity}" value="${currentUsageForThisActivity}" ${isFinalized ? 'disabled' : ''} class="w-16 px-2 py-1 border border-gray-300 rounded-lg text-sm text-center">
                             <div class="flex-1">
                                 <span class="text-sm font-medium text-gray-900">${equipment.nama_barang}</span>
-                                <p class="text-xs text-gray-500 font-bold">Kuantitas Pinjam: ${requiredQuantity}</p>
-                                <p class="text-xs text-gray-500">Stok Tersedia: ${availableStockExcludingThisActivity}</p>
-                                ${stockWarning}
-                                <input type="hidden" name="confirmEquipmentPackage" data-id="${equipmentId}" value="${requiredQuantity}">
+                                <p class="text-xs text-gray-500">Tersedia: ${availableStockExcludingThisActivity} | Maksimal Pinjam: ${totalOwned - (totalUsage - currentUsageForThisActivity)}</p>
                             </div>
                             ${confirmationStatus}
-                        </div>
-                    `;
+                        </label>
+                    ` : '';
                 }).join('');
             } else {
                 equipmentContainer.innerHTML = '<p class="text-gray-500 text-center py-4">Tidak ada peralatan yang dibutuhkan</p>';
             }
 
-            // Button visibility/text adjustment (HANYA TAMPIL JIKA ADA PAKET TERPILIH)
-            if (isFinalized || assignedEquipmentDetails.length === 0 || !assignedPackageId) {
+            // Button visibility/text adjustment
+            if (isFinalized || assignedEquipment.length === 0) {
                 confirmEquipmentBtn.classList.add('hidden');
             } else if (kegiatan.status_kegiatan === 'Terjadwal' || kegiatan.status_kegiatan === 'Berlangsung') {
+                 // Hanya tampilkan tombol jika kegiatan terjadwal atau sedang berlangsung
                 confirmEquipmentBtn.classList.remove('hidden');
-                confirmEquipmentBtn.textContent = 'Konfirmasi Peminjaman Peralatan (Sesuai Paket)';
+                confirmEquipmentBtn.textContent = 'Konfirmasi & Update Peminjaman Peralatan';
                 confirmEquipmentBtn.classList.remove('bg-green-500', 'hover:bg-green-600');
                 confirmEquipmentBtn.classList.add('bg-blue-500', 'hover:bg-blue-600');
             }
 
-            // Store current kegiatan ID and Package ID for confirmation
+
+            // Store current kegiatan ID for confirmation
             document.getElementById('staffDetailModal').dataset.kegiatanId = id;
-            document.getElementById('staffDetailModal').dataset.packageId = assignedPackageId; // Store Package ID here!
             document.getElementById('staffDetailModal').classList.remove('hidden');
 
             hideLoading();
@@ -2605,47 +2244,32 @@
     }
 
     function closeStaffDetailModal() {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         document.getElementById('staffDetailModal').classList.add('hidden');
     }
 
-    // Handle Equipment Confirmation (Menggunakan Paket ID)
+    // Handle Equipment Confirmation (Perbaikan Logika Peminjaman)
     async function handleEquipmentConfirmation() {
         showLoading();
 
         const kegiatanId = document.getElementById('staffDetailModal').dataset.kegiatanId;
-        const packageId = document.getElementById('staffDetailModal').dataset.packageId; // AMBIL PACKAGE ID
-
-        if (!packageId) {
-            hideLoading();
-            showToast('Gagal: ID Paket tidak ditemukan.', 'error');
-            return;
-        }
-
-        // Cek jika ada item di paket yang melebihi stok yang tersedia saat ini
-        const inputs = document.querySelectorAll('input[name="confirmEquipmentPackage"]');
+        const inputs = document.querySelectorAll('input[name="confirmEquipment"]:not(:disabled)');
+        const equipmentData = [];
         let validationError = false;
-        
-        // Perlu memuat data barang keluar lagi untuk cek ketersediaan
-        const allBarangKeluarData = await loadSheetData('barang_keluar');
 
         inputs.forEach(input => {
-            const requiredQuantity = parseInt(input.value) || 0;
-            const barang = barangData.find(b => b.id_barang === input.dataset.id);
+            const id = input.dataset.id;
+            const jumlah = parseInt(input.value) || 0;
+            const max = parseInt(input.max) || 0;
             
-            // Hitung usage saat ini untuk kegiatan ini (yang akan di-rollback)
-            const currentUsageForThisActivity = allBarangKeluarData.filter(item => item.kegiatan_id === kegiatanId && item.equipment_id === input.dataset.id).reduce((sum, item) => sum + (parseInt(item.jumlah) || 0), 0);
-            
-            const totalOwned = parseInt(barang.jumlah_dimiliki) || 0;
-            const totalUsage = parseInt(barang.jumlah_digunakan) || 0;
-            
-            // Stok tersedia exklusi penggunaan di kegiatan ini (karena akan di-rollback)
-            const availableStockExcludingThisActivity = totalOwned - (totalUsage - currentUsageForThisActivity);
-
-            if (requiredQuantity > availableStockExcludingThisActivity) {
+            if (jumlah < 0) {
                 validationError = true;
-                showToast(`Gagal pinjam ${barang.nama_barang}: Kuantitas (${requiredQuantity}) melebihi stok tersedia (${availableStockExcludingThisActivity}).`, 'error');
+                showToast(`Jumlah pinjam untuk ${id} tidak boleh negatif.`, 'error');
+            } else if (jumlah > max) {
+                validationError = true;
+                showToast(`Jumlah pinjam untuk ${id} melebihi batas tersedia (${max}).`, 'error');
             }
+
+            equipmentData.push({ id, jumlah });
         });
 
         if (validationError) {
@@ -2653,13 +2277,12 @@
             return;
         }
 
-
         const formData = new FormData();
         formData.append('action', 'confirmEquipment');
         formData.append('kegiatan_id', kegiatanId);
         formData.append('staff_id', currentUser.id);
         formData.append('staff_name', currentUser.nama);
-        formData.append('package_id', packageId); // KIRIM ID PAKET BUKAN DATA EQUIPMENT
+        formData.append('equipment_data', JSON.stringify(equipmentData));
 
         try {
             const response = await fetch(SCRIPT_URL, {
@@ -2672,7 +2295,7 @@
             if (result.success) {
                 showToast(result.message || 'Konfirmasi peralatan berhasil disimpan dan inventaris diperbarui', 'success');
                 closeStaffDetailModal();
-                loadKegiatan(); 
+                loadKegiatan(); // Reload data untuk update status/tombol
             } else {
                 showToast('Gagal menyimpan konfirmasi peralatan: ' + result.message, 'error');
             }
@@ -2685,12 +2308,10 @@
 
 
     function editKegiatan(id) {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         openKegiatanModal(id);
     }
 
     async function deleteKegiatan(id) {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         const item = kegiatanData.find(k => k.id_kegiatan === id);
         if (!item) return;
 
@@ -2751,7 +2372,6 @@
 
     // User Modal Functions
     function openUserModal(id = null) {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         const modal = document.getElementById('userModal');
         const form = document.getElementById('userForm');
         const title = document.getElementById('userModalTitle');
@@ -2779,12 +2399,10 @@
     }
 
     function closeUserModal() {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         document.getElementById('userModal').classList.add('hidden');
     }
 
     async function handleUserSubmit(e) {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         e.preventDefault();
         showLoading();
 
@@ -2819,12 +2437,10 @@
     }
 
     function editUser(id) {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         openUserModal(id);
     }
 
     async function deleteUser(id) {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         const user = usersData.find(u => u.id === id);
         if (!user) return;
 
@@ -2884,7 +2500,6 @@
 
     // Utility Functions
     function showToast(message, type = 'success') {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toastMessage');
         const toastIcon = document.getElementById('toastIcon');
@@ -2904,17 +2519,14 @@
     }
 
     function showLoading() {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         document.getElementById('loadingOverlay').classList.remove('hidden');
     }
 
     function hideLoading() {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         document.getElementById('loadingOverlay').classList.add('hidden');
     }
 
     function getStatusBadgeClass(status) {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         const classes = {
             'Tersedia': 'bg-green-100 text-green-800',
             'Digunakan': 'bg-blue-100 text-blue-800',
@@ -2924,7 +2536,6 @@
     }
 
     function getStatusKegiatanBadgeClass(status) {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         const classes = {
             'Terjadwal': 'bg-blue-100 text-blue-800',
             'Berlangsung': 'bg-green-100 text-green-800',
@@ -2935,7 +2546,6 @@
     }
 
     function formatDate(dateString) {
-        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
         if (!dateString || dateString === '') return 'N/A';
         
         // Handle different date formats
