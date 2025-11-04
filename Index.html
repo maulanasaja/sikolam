@@ -1,0 +1,2980 @@
+<!doctype html>
+<html lang="id">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sikolam - Sistem Inventaris Multimedia</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+        box-sizing: border-box;
+    }
+    
+    * {
+        box-sizing: border-box;
+    }
+
+    .fade-in {
+        animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-backdrop {
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+    }
+
+    .toast {
+        animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+        from { transform: translateX(100%); }
+        to { transform: translateX(0); }
+    }
+
+    .loading {
+        border: 3px solid #f3f4f6;
+        border-top: 3px solid #3b82f6;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* PERBAIKAN NAV MOBILE: Memastikan navbar fixed di bawah */
+    .mobile-nav-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+        position: fixed; /* Membuat navbar tetap di bawah */
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: white;
+        border-top: 1px solid #e5e7eb;
+        z-index: 9999; /* PERBAIKAN Z-INDEX */
+    }
+
+    .mobile-nav-container::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+    }
+
+    .mobile-nav-content {
+        display: flex;
+        flex-wrap: nowrap;
+        min-width: min-content; /* Memungkinkan scroll jika melebihi lebar layar */
+        height: 64px;
+    }
+
+    .nav-link-mobile {
+        flex: 0 0 auto; /* Mencegah item menciut */
+        width: 25vw; /* Tetapkan lebar untuk 4 item terlihat di layar default */
+        min-width: 80px; /* Lebar minimum per item */
+    }
+    /* Mengatur padding bawah pada konten utama agar tidak tertutup navbar mobile */
+    @media (max-width: 768px) {
+        #mainContent {
+            padding-bottom: 80px; /* Lebih besar dari tinggi navbar 64px */
+        }
+    }
+    /* END PERBAIKAN NAV MOBILE */
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="bg-gray-50">
+  <div id="loginPage" class="flex items-center justify-center px-4 py-12 min-h-screen"> 
+   <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-lg">
+    <div class="text-center">
+     <div class="mx-auto h-16 w-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center mb-4">
+      <svg class="h-10 w-10 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+      </svg>
+     </div>
+     <h2 class="text-3xl font-bold text-gray-900">Sikolam</h2>
+     <p class="mt-2 text-sm text-gray-600">Sistem Inventaris Multimedia</p>
+    </div>
+    <form id="loginForm" class="mt-8 space-y-6">
+     <div class="space-y-4">
+      <div>
+       <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+       <input id="username" name="username" type="text" required class="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Masukkan username" />
+      </div>
+      <div>
+       <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+       <input id="password" name="password" type="password" required class="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Masukkan password" />
+      </div>
+     </div>
+     <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">Masuk</button>
+    </form>
+   </div>
+  </div>
+  <div id="mainApp" class="hidden">
+   <aside id="sidebar" class="hidden md:flex fixed left-0 top-0 h-full w-64 bg-white shadow-lg flex-col z-30">
+    <div class="p-6 border-b border-gray-200">
+     <div class="flex items-center space-x-3">
+      <div class="h-10 w-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center">
+       <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+       </svg>
+      </div>
+      <div>
+       <h1 class="text-xl font-bold text-gray-900">Sikolam</h1>
+       <p class="text-xs text-gray-500" id="userRoleSidebar"></p>
+      </div>
+     </div>
+    </div>
+    <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+     <a href="#" data-page="dashboard" class="nav-link flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+      </svg>
+      <span>Dashboard</span>
+     </a>
+     <a href="#" data-page="barang" class="nav-link flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+      </svg>
+      <span>Data Barang</span>
+     </a>
+     <a href="#" data-page="kegiatan" class="nav-link flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+      </svg>
+      <span>Jadwal Kegiatan</span>
+     </a>
+     <a href="#" data-page="barang-masuk" class="nav-link flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18M3 12h18"></path>
+      </svg>
+      <span>Barang Masuk</span>
+     </a>
+     <a href="#" data-page="barang-keluar" class="nav-link flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+      </svg>
+      <span>Barang Keluar</span>
+     </a>
+     <a href="#" data-page="users" id="usersMenuSidebar" class="nav-link hidden flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+      </svg>
+      <span>Kelola Pengguna</span>
+     </a>
+     <a href="#" data-page="packages" id="packagesMenuSidebar" class="nav-link hidden flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10m0 0h16v-4M4 17h16m-4-10H8m8 0v4m0 0H8m8 0h4m-4-4V7M8 7v4m0 0H4"></path>
+      </svg>
+      <span>Kelola Paket</span>
+     </a>
+     <a href="#" data-page="staff-activity-log" id="staffActivityLogMenuSidebar" class="nav-link hidden flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+      </svg>
+      <span>Log Aktivitas Staff</span>
+     </a>
+    </nav>
+    <div class="p-4 border-t border-gray-200">
+     <div class="flex items-center space-x-3 px-4 py-3 bg-gray-50 rounded-lg mb-2">
+      <div class="h-10 w-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
+       <span id="userInitialSidebar"></span>
+      </div>
+      <div class="flex-1 min-w-0">
+       <p class="text-sm font-medium text-gray-900 truncate" id="userNameSidebar"></p>
+       <p class="text-xs text-gray-500" id="usernameSidebar"></p>
+      </div>
+     </div>
+     <button id="logoutBtn" class="w-full flex items-center justify-center space-x-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+      </svg>
+      <span>Keluar</span>
+     </button>
+    </div>
+   </aside>
+   <nav id="mobileNav" class="md:hidden mobile-nav-container">
+    <div class="mobile-nav-content">
+     <a href="#" data-page="dashboard" class="nav-link-mobile flex flex-col items-center justify-center h-full text-gray-600 hover:text-blue-600 transition-colors">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+      </svg>
+      <span class="text-xs mt-1">Home</span>
+     </a>
+     <a href="#" data-page="barang" class="nav-link-mobile flex flex-col items-center justify-center h-full text-gray-600 hover:text-blue-600 transition-colors">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+      </svg>
+      <span class="text-xs mt-1">Barang</span>
+     </a>
+     <a href="#" data-page="kegiatan" class="nav-link-mobile flex flex-col items-center justify-center h-full text-gray-600 hover:text-blue-600 transition-colors">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+      </svg>
+      <span class="text-xs mt-1">Kegiatan</span>
+     </a>
+     <a href="#" data-page="barang-masuk" class="nav-link-mobile flex flex-col items-center justify-center h-full text-gray-600 hover:text-blue-600 transition-colors">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18M3 12h18"></path>
+      </svg>
+      <span class="text-xs mt-1">Masuk</span>
+     </a>
+     <a href="#" data-page="barang-keluar" class="nav-link-mobile flex flex-col items-center justify-center h-full text-gray-600 hover:text-blue-600 transition-colors">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+      </svg>
+      <span class="text-xs mt-1">Keluar</span>
+     </a>
+     <a href="#" data-page="users" id="usersMenuMobile" class="nav-link-mobile hidden flex-col items-center justify-center h-full text-gray-600 hover:text-blue-600 transition-colors">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+      </svg>
+      <span class="text-xs mt-1">Users</span>
+     </a>
+     <a href="#" data-page="packages" id="packagesMenuMobile" class="nav-link-mobile hidden flex-col items-center justify-center h-full text-gray-600 hover:text-blue-600 transition-colors">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10m0 0h16v-4M4 17h16m-4-10H8m8 0v4m0 0H8m8 0h4m-4-4V7M8 7v4m0 0H4"></path>
+      </svg>
+      <span class="text-xs mt-1">Paket</span>
+     </a>
+     <a href="#" data-page="staff-activity-log" id="staffActivityLogMenuMobile" class="nav-link-mobile hidden flex-col items-center justify-center h-full text-gray-600 hover:text-blue-600 transition-colors">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+      </svg>
+      <span class="text-xs mt-1">Log Staff</span>
+     </a>
+     <button id="mobileMenuBtn" class="nav-link-mobile flex flex-col items-center justify-center h-full text-gray-600 hover:text-blue-600 transition-colors">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+      <span class="text-xs mt-1">Menu</span>
+     </button>
+    </div>
+   </nav>
+   <div id="mobileMenuModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden">
+    <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl p-6 pb-20">
+     <div class="flex items-center space-x-3 mb-6 pb-4 border-b border-gray-200">
+      <div class="h-12 w-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-lg">
+       <span id="userInitialMobile"></span>
+      </div>
+      <div>
+       <p class="font-medium text-gray-900" id="userNameMobile"></p>
+       <p class="text-sm text-gray-500" id="usernameMobile"></p>
+       <p class="text-xs text-blue-600" id="userRoleMobile"></p>
+      </div>
+     </div>
+     <button id="logoutBtnMobile" class="w-full flex items-center justify-center space-x-2 px-4 py-3 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+      </svg>
+      <span>Keluar</span>
+     </button>
+    </div>
+   </div>
+   <main id="mainContent" class="md:ml-64 min-h-screen"> 
+    <div id="dashboardPage" class="page-content p-4 md:p-8">
+     <div class="mb-6">
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Dashboard</h2>
+      <p class="text-gray-600 mt-1">Selamat datang di Sistem Inventaris Multimedia</p>
+     </div>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6">
+      <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+       <div class="flex items-center justify-between">
+        <div>
+         <p class="text-sm text-gray-600 mb-1">Total Barang</p>
+         <p class="text-3xl font-bold text-gray-900" id="totalBarang">0</p>
+        </div>
+        <div class="h-12 w-12 bg-blue-100 rounded-xl flex items-center justify-center">
+         <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+         </svg>
+        </div>
+       </div>
+      </div>
+      <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+       <div class="flex items-center justify-between">
+        <div>
+         <p class="text-sm text-gray-600 mb-1">Barang Digunakan</p>
+         <p class="text-3xl font-bold text-gray-900" id="barangDigunakan">0</p>
+        </div>
+        <div class="h-12 w-12 bg-green-100 rounded-xl flex items-center justify-center">
+         <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+         </svg>
+        </div>
+       </div>
+      </div>
+      <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+       <div class="flex items-center justify-between">
+        <div>
+         <p class="text-sm text-gray-600 mb-1">Kegiatan Hari Ini</p>
+         <p class="text-3xl font-bold text-gray-900" id="kegiatanHariIni">0</p>
+        </div>
+        <div class="h-12 w-12 bg-purple-100 rounded-xl flex items-center justify-center">
+         <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+         </svg>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+       <h3 class="text-lg font-semibold text-gray-900 mb-4">Kegiatan Mendatang</h3>
+       <div id="upcomingActivities" class="space-y-3">
+        <div class="text-center py-8 text-gray-500">
+         Memuat data...
+        </div>
+       </div>
+      </div>
+      <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+       <h3 class="text-lg font-semibold text-gray-900 mb-4">Status Barang</h3>
+       <div id="itemStatus" class="space-y-3">
+        <div class="text-center py-8 text-gray-500">
+         Memuat data...
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div id="barangPage" class="page-content hidden p-4 md:p-8">
+     <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+       <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Data Barang</h2>
+       <p class="text-gray-600 mt-1">Kelola inventaris multimedia</p>
+      </div>
+      <div class="flex space-x-3">
+       <button id="addBarangBtn" class="flex items-center justify-center space-x-2 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors shadow-sm">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        <span>Tambah Barang</span>
+       </button>
+       <button id="refreshBarangBtn" class="flex items-center justify-center space-x-2 px-4 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors shadow-sm">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+        </svg>
+        <span>Refresh</span>
+       </button>
+      </div>
+     </div>
+     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="overflow-x-auto">
+       <table class="w-full">
+        <thead class="bg-gray-50 border-b border-gray-200">
+         <tr>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">ID</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Nama Barang</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Dimiliki</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Digunakan</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Sisa</th> <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
+         </tr>
+        </thead>
+        <tbody id="barangTableBody" class="divide-y divide-gray-200">
+         <tr>
+          <td colspan="7" class="px-6 py-8 text-center text-gray-500">Memuat data...</td> </tr>
+        </tbody>
+       </table>
+      </div>
+     </div>
+    </div>
+    <div id="kegiatanPage" class="page-content hidden p-4 md:p-8">
+     <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+       <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Jadwal Kegiatan</h2>
+       <p class="text-gray-600 mt-1">Kelola jadwal kegiatan multimedia</p>
+      </div>
+      <div class="flex space-x-3">
+       <button id="addKegiatanBtn" class="flex items-center justify-center space-x-2 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors shadow-sm">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        <span>Tambah Kegiatan</span>
+       </button>
+       <button id="refreshKegiatanBtn" class="flex items-center justify-center space-x-2 px-4 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors shadow-sm">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+        </svg>
+        <span>Refresh</span>
+       </button>
+      </div>
+     </div>
+     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="overflow-x-auto">
+       <table class="w-full">
+        <thead class="bg-gray-50 border-b border-gray-200">
+         <tr>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">ID</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Nama Kegiatan</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Jenis</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Lokasi</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tanggal</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Waktu</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
+         </tr>
+        </thead>
+        <tbody id="kegiatanTableBody" class="divide-y divide-gray-200">
+         <tr>
+          <td colspan="8" class="px-6 py-8 text-center text-gray-500">Memuat data...</td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+     </div>
+    </div>
+    <div id="barang-masukPage" class="page-content hidden p-4 md:p-8">
+     <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+       <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Barang Masuk</h2>
+       <p class="text-gray-600 mt-1">Riwayat barang yang dikembalikan dari kegiatan</p>
+      </div>
+      <button id="refreshBarangMasukBtn" class="flex items-center justify-center space-x-2 px-4 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors shadow-sm">
+       <svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+       </svg>
+       <span>Refresh</span>
+      </button>
+     </div>
+     <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6">
+      <h3 class="text-md font-semibold text-gray-800 mb-3">Filter Riwayat Barang Masuk</h3>
+      <div class="flex flex-col sm:flex-row gap-3">
+       <div class="flex-1">
+        <label for="filterMasukStart" class="block text-xs font-medium text-gray-700">Tanggal Mulai</label>
+        <input type="date" id="filterMasukStart" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500">
+       </div>
+       <div class="flex-1">
+        <label for="filterMasukEnd" class="block text-xs font-medium text-gray-700">Tanggal Selesai</label>
+        <input type="date" id="filterMasukEnd" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500">
+       </div>
+       <button id="applyMasukFilterBtn" class="sm:self-end w-full sm:w-auto px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors shadow-sm mt-auto">Terapkan Filter</button>
+      </div>
+     </div>
+     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="overflow-x-auto">
+       <table class="w-full">
+        <thead class="bg-gray-50 border-b border-gray-200">
+         <tr>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">ID</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Kegiatan</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Nama Barang</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Jumlah</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Staff Terlibat</th> <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tanggal/Waktu</th> </tr>
+        </thead>
+        <tbody id="barangMasukTableBody" class="divide-y divide-gray-200">
+         <tr>
+          <td colspan="6" class="px-6 py-8 text-center text-gray-500">Memuat data...</td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+     </div>
+    </div>
+    <div id="barang-keluarPage" class="page-content hidden p-4 md:p-8">
+     <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+       <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Barang Keluar</h2>
+       <p class="text-gray-600 mt-1">Riwayat barang yang digunakan untuk kegiatan</p>
+      </div>
+      <button id="refreshBarangKeluarBtn" class="flex items-center justify-center space-x-2 px-4 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors shadow-sm">
+       <svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+       </svg>
+       <span>Refresh</span>
+      </button>
+     </div>
+     <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6">
+      <h3 class="text-md font-semibold text-gray-800 mb-3">Filter Riwayat Barang Keluar</h3>
+      <div class="flex flex-col sm:flex-row gap-3">
+       <div class="flex-1">
+        <label for="filterKeluarStart" class="block text-xs font-medium text-gray-700">Tanggal Mulai</label>
+        <input type="date" id="filterKeluarStart" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500">
+       </div>
+       <div class="flex-1">
+        <label for="filterKeluarEnd" class="block text-xs font-medium text-gray-700">Tanggal Selesai</label>
+        <input type="date" id="filterKeluarEnd" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500">
+       </div>
+       <button id="applyKeluarFilterBtn" class="sm:self-end w-full sm:w-auto px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors shadow-sm mt-auto">Terapkan Filter</button>
+      </div>
+     </div>
+     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="overflow-x-auto">
+       <table class="w-full">
+        <thead class="bg-gray-50 border-b border-gray-200">
+         <tr>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">ID</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Kegiatan</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Nama Barang</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Jumlah</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Staff Terlibat</th> <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tanggal/Waktu</th> </tr>
+        </thead>
+        <tbody id="barangKeluarTableBody" class="divide-y divide-gray-200">
+         <tr>
+          <td colspan="6" class="px-6 py-8 text-center text-gray-500">Memuat data...</td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+     </div>
+    </div>
+    <div id="usersPage" class="page-content hidden p-4 md:p-8">
+     <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+       <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Kelola Pengguna</h2>
+       <p class="text-gray-600 mt-1">Manajemen akun pengguna sistem</p>
+      </div>
+      <button id="addUserBtn" class="flex items-center justify-center space-x-2 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors shadow-sm">
+       <svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+       </svg>
+       <span>Tambah Pengguna</span>
+      </button>
+     </div>
+     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="overflow-x-auto">
+       <table class="w-full">
+        <thead class="bg-gray-50 border-b border-gray-200">
+         <tr>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">ID</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Nama</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Username</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Role</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
+         </tr>
+        </thead>
+        <tbody id="usersTableBody" class="divide-y divide-gray-200">
+         <tr>
+          <td colspan="5" class="px-6 py-8 text-center text-gray-500">Memuat data...</td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+     </div>
+    </div>
+    <div id="packagesPage" class="page-content hidden p-4 md:p-8">
+     <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+       <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Kelola Paket Peralatan</h2>
+       <p class="text-gray-600 mt-1">Buat dan kelola paket barang untuk kegiatan</p>
+      </div>
+      <button id="addPackageBtn" class="flex items-center justify-center space-x-2 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors shadow-sm">
+       <svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+       </svg>
+       <span>Tambah Paket</span>
+      </button>
+     </div>
+     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="overflow-x-auto">
+       <table class="w-full">
+        <thead class="bg-gray-50 border-b border-gray-200">
+         <tr>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">ID Paket</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Nama Paket</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Detail Barang</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
+         </tr>
+        </thead>
+        <tbody id="packagesTableBody" class="divide-y divide-gray-200">
+         <tr>
+          <td colspan="4" class="px-6 py-8 text-center text-gray-500">Memuat data...</td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+     </div>
+    </div>
+    <div id="staff-activity-logPage" class="page-content hidden p-4 md:p-8">
+     <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+       <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Log Aktivitas Staff</h2>
+       <p class="text-gray-600 mt-1">Lacak kegiatan yang ditugaskan dan diselesaikan oleh Staff</p>
+      </div>
+      <button id="refreshStaffActivityLogBtn" class="flex items-center justify-center space-x-2 px-4 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors shadow-sm">
+       <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+       </svg>
+       <span>Refresh</span>
+      </button>
+     </div>
+     <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6">
+      <h3 class="text-md font-semibold text-gray-800 mb-3">Filter Log Aktivitas</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+       <div class="flex-1">
+        <label for="filterLogStart" class="block text-xs font-medium text-gray-700">Tanggal Mulai</label>
+        <input type="date" id="filterLogStart" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500">
+       </div>
+       <div class="flex-1">
+        <label for="filterLogEnd" class="block text-xs font-medium text-gray-700">Tanggal Selesai</label>
+        <input type="date" id="filterLogEnd" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500">
+       </div>
+       <div class="flex-1">
+        <label for="filterStaff" class="block text-xs font-medium text-gray-700">Nama Staff</label>
+        <select id="filterStaff" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500">
+         <option value="">Semua Staff</option>
+        </select>
+       </div>
+       <button id="applyLogFilterBtn" class="sm:self-end w-full sm:w-auto px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors shadow-sm mt-auto">Terapkan Filter</button>
+      </div>
+     </div>
+     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="overflow-x-auto">
+       <table class="w-full">
+        <thead class="bg-gray-50 border-b border-gray-200">
+         <tr>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">ID Log</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Nama Kegiatan</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Staff</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tanggal Kegiatan</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+         </tr>
+        </thead>
+        <tbody id="staffActivityLogTableBody" class="divide-y divide-gray-200">
+         <tr>
+          <td colspan="5" class="px-6 py-8 text-center text-gray-500">Memuat data...</td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+     </div>
+    </div>
+   </main>
+  </div>
+  <div id="barangModal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4">
+   <div class="bg-white rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+    <div class="p-6 border-b border-gray-200">
+     <h3 class="text-xl font-bold text-gray-900" id="barangModalTitle">Tambah Barang</h3>
+    </div>
+    <form id="barangForm" class="p-6 space-y-4">
+     <input type="hidden" id="barangId" />
+     <div>
+      <label for="namaBarang" class="block text-sm font-medium text-gray-700 mb-1">Nama Barang</label>
+      <input type="text" id="namaBarang" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+     </div>
+     <div>
+      <label for="jumlahDimiliki" class="block text-sm font-medium text-gray-700 mb-1">Jumlah Dimiliki</label>
+      <input type="number" id="jumlahDimiliki" required min="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+     </div>
+     <div>
+      <label for="jumlahDigunakan" class="block text-sm font-medium text-gray-700 mb-1">Jumlah Digunakan</label>
+      <input type="number" id="jumlahDigunakan" required min="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+     </div>
+     <div>
+      <label for="statusBarang" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+      <select id="statusBarang" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+       <option value="Tersedia">Tersedia</option>
+       <option value="Digunakan">Digunakan</option>
+       <option value="Maintenance">Maintenance</option>
+      </select>
+     </div>
+     <div class="flex space-x-3 pt-4">
+      <button type="button" id="cancelBarangBtn" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">Batal</button>
+      <button type="submit" class="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">Simpan</button>
+     </div>
+    </form>
+   </div>
+  </div>
+  <div id="kegiatanModal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4">
+   <div class="bg-white rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+    <div class="p-6 border-b border-gray-200">
+     <h3 class="text-xl font-bold text-gray-900" id="kegiatanModalTitle">Tambah Kegiatan</h3>
+    </div>
+    <form id="kegiatanForm" class="p-6 space-y-4">
+     <input type="hidden" id="kegiatanId" />
+     <div>
+      <label for="namaKegiatan" class="block text-sm font-medium text-gray-700 mb-1">Nama Kegiatan</label>
+      <input type="text" id="namaKegiatan" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+     </div>
+     <div>
+      <label for="jenisKegiatan" class="block text-sm font-medium text-gray-700 mb-1">Jenis Kegiatan</label>
+      <select id="jenisKegiatan" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+       <option value="Live Streaming">Live Streaming</option>
+       <option value="Zoom Meeting">Zoom Meeting</option>
+       <option value="Operator">Operator</option>
+       <option value="Take & Editing Video">Take & Editing Video</option>
+       <option value="Lainnya">Lainnya</option>
+      </select>
+     </div>
+     <div>
+      <label for="lokasiKegiatan" class="block text-sm font-medium text-gray-700 mb-1">Lokasi</label>
+      <input type="text" id="lokasiKegiatan" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+     </div>
+     <div>
+      <label for="tanggalKegiatan" class="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
+      <input type="date" id="tanggalKegiatan" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+     </div>
+     <div class="grid grid-cols-2 gap-4">
+      <div>
+       <label for="jamMulai" class="block text-sm font-medium text-gray-700 mb-1">Jam Mulai</label>
+       <input type="time" id="jamMulai" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+      <div>
+       <label for="jamSelesai" class="block text-sm font-medium text-gray-700 mb-1">Jam Selesai</label>
+       <input type="time" id="jamSelesai" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+     </div>
+     <div id="adminOnlyFields" class="space-y-4">
+      <div>
+       <label class="block text-sm font-medium text-gray-700 mb-2">Staff yang Terlibat</label>
+       <div id="staffSelection" class="space-y-2 max-h-32 overflow-y-auto border border-gray-300 rounded-lg p-3">
+       </div>
+      </div>
+      <div>
+       <label for="packageSelect" class="block text-sm font-medium text-gray-700 mb-1">Pilih Paket Peralatan</label>
+       <select id="packageSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <option value="">-- Tidak Ada Paket --</option>
+        </select>
+       <input type="hidden" id="selectedEquipmentIds" value="">
+      </div>
+     </div>
+     <div>
+      <label for="statusKegiatan" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+      <select id="statusKegiatan" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+       <option value="Terjadwal">Terjadwal</option>
+       <option value="Berlangsung">Berlangsung</option>
+       <option value="Selesai">Selesai</option>
+       <option value="Dibatalkan">Dibatalkan</option>
+      </select>
+     </div>
+     <div class="flex space-x-3 pt-4">
+      <button type="button" id="cancelKegiatanBtn" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">Batal</button>
+      <button type="submit" class="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">Simpan</button>
+     </div>
+    </form>
+   </div>
+  </div>
+  <div id="userModal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4">
+   <div class="bg-white rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+    <div class="p-6 border-b border-gray-200">
+     <h3 class="text-xl font-bold text-gray-900" id="userModalTitle">Tambah Pengguna</h3>
+    </div>
+    <form id="userForm" class="p-6 space-y-4">
+     <input type="hidden" id="userId" />
+     <div>
+      <label for="namaUser" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+      <input type="text" id="namaUser" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+     </div>
+     <div>
+      <label for="usernameUser" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+      <input type="text" id="usernameUser" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+     </div>
+     <div>
+      <label for="passwordUser" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+      <input type="password" id="passwordUser" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Kosongkan jika tidak ingin mengubah" />
+     </div>
+     <div>
+      <label for="roleUser" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+      <select id="roleUser" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+       <option value="admin">Admin</option>
+       <option value="staff">Staff</option>
+      </select>
+     </div>
+     <div class="flex space-x-3 pt-4">
+      <button type="button" id="cancelUserBtn" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">Batal</button>
+      <button type="submit" class="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">Simpan</button>
+     </div>
+    </form>
+   </div>
+  </div>
+  <div id="packageModal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4">
+   <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+    <div class="p-6 border-b border-gray-200">
+     <h3 class="text-xl font-bold text-gray-900" id="packageModalTitle">Tambah Paket Peralatan</h3>
+    </div>
+    <form id="packageForm" class="p-6 space-y-4">
+     <input type="hidden" id="packageId" />
+     <div>
+      <label for="namaPackage" class="block text-sm font-medium text-gray-700 mb-1">Nama Paket</label>
+      <input type="text" id="namaPackage" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+     </div>
+     <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Barang & Jumlah</label>
+      <div id="packageEquipmentSelection" class="space-y-3 max-h-60 overflow-y-auto border border-gray-300 rounded-lg p-3">
+       <p class="text-gray-500 text-sm text-center">Memuat data barang...</p>
+      </div>
+     </div>
+     <div class="flex space-x-3 pt-4">
+      <button type="button" id="cancelPackageBtn" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">Batal</button>
+      <button type="submit" class="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">Simpan</button>
+     </div>
+    </form>
+   </div>
+  </div>
+  <div id="staffDetailModal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4">
+   <div class="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div class="p-6 border-b border-gray-200">
+     <h3 class="text-xl font-bold text-gray-900" id="staffDetailTitle">Detail Kegiatan</h3>
+    </div>
+    <div class="p-6 space-y-6">
+     <div id="kegiatanInfo" class="bg-gray-50 rounded-lg p-4">
+     </div>
+     <div>
+      <h4 class="text-lg font-semibold text-gray-900 mb-3">Peralatan yang Dibutuhkan (Sesuai Paket)</h4>
+      <div id="equipmentConfirmation" class="space-y-3">
+      </div>
+     </div>
+     <div class="flex space-x-3 pt-4">
+      <button type="button" id="cancelStaffDetailBtn" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">Tutup</button>
+      <button type="button" id="confirmEquipmentBtn" class="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">Konfirmasi Peminjaman Peralatan</button>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div id="toast" class="hidden fixed top-4 right-4 z-50">
+   <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-4 flex items-center space-x-3 min-w-[300px] toast">
+    <div id="toastIcon" class="flex-shrink-0"></div>
+    <p id="toastMessage" class="text-sm text-gray-900"></p>
+   </div>
+  </div>
+  <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+   <div class="bg-white rounded-lg p-6 flex flex-col items-center space-y-4">
+    <div class="loading"></div>
+    <p class="text-gray-700">Memproses...</p>
+   </div>
+  </div>
+  <script>
+    // Google Apps Script URL - Updated with your URL
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzqfiMbi-oxri0YQGYKrzbyMYe2_4dUCvOoZPo_sxlZ13nFm0jLEAwwyVJOCiTW_AgQaQ/exec'; // **GANTI DENGAN URL ANDA**
+    
+    // Google Sheets CSV URLs (untuk membaca data) - Updated with correct GIDs
+    const SHEETS_URLS = {
+        users: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRy4_iUJxIZjn1vyzFKDRH6_Iai0y8jDf39FgefnC_PJQH59ayCvip73CwbTKxf41I_srBLdbLtHDZP/pub?gid=0&single=true&output=csv',
+        barang: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRy4_iUJxIZjn1vyzFKDRH6_Iai0y8jDf39FgefnC_PJQH59ayCvip73CwbTKxf41I_srBLdbLtHDZP/pub?gid=1527833599&single=true&output=csv',
+        kegiatan: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRy4_iUJxIZjn1vyzFKDRH6_Iai0y8jDf39FgefnC_PJQH59ayCvip73CwbTKxf41I_srBLdbLtHDZP/pub?gid=1054793580&single=true&output=csv',
+        kegiatan_staff: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRy4_iUJxIZjn1vyzFKDRH6_Iai0y8jDf39FgefnC_PJQH59ayCvip73CwbTKxf41I_srBLdbLtHDZP/pub?gid=540507544&single=true&output=csv',
+        kegiatan_equipment: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRy4_iUJxIZjn1vyzFKDRH6_Iai0y8jDf39FgefnC_PJQH59ayCvip73CwbTKxf41I_srBLdbLtHDZP/pub?gid=1855550924&single=true&output=csv',
+        equipment_confirmations: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRy4_iUJxIZjn1vyzFKDRH6_Iai0y8jDf39FgefnC_PJQH59ayCvip73CwbTKxf41I_srBLdbLtHDZP/pub?gid=9446231&single=true&output=csv',
+        barang_keluar: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRy4_iUJxIZjn1vyzFKDRH6_Iai0y8jDf39FgefnC_PJQH59ayCvip73CwbTKxf41I_srBLdbLtHDZP/pub?gid=2000721670&single=true&output=csv',
+        barang_masuk: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRy4_iUJxIZjn1vyzFKDRH6_Iai0y8jDf39FgefnC_PJQH59ayCvip73CwbTKxf41I_srBLdbLtHDZP/pub?gid=1746769660&single=true&output=csv',
+        staff_activity_log: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRy4_iUJxIZjn1vyzFKDRH6_Iai0y8jDf39FgefnC_PJQH59ayCvip73CwbTKxf41I_srBLdbLtHDZP/pub?gid=1862749988&single=true&output=csv', 
+        packages: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRy4_iUJxIZjn1vyzFKDRH6_Iai0y8jDf39FgefnC_PJQH59ayCvip73CwbTKxf41I_srBLdbLtHDZP/pub?gid=741401137&single=true&output=csv' // GID BARU UNTUK PACKAGES!
+    };
+
+    // State Management
+    let currentUser = null;
+    let usersData = [];
+    let barangData = [];
+    let kegiatanData = [];
+    let kegiatanStaffData = [];
+    let kegiatanEquipmentData = [];
+    let equipmentConfirmationsData = [];
+    let barangMasukData = [];
+    let barangKeluarData = [];
+    let staffActivityLogData = [];
+    let packagesData = []; // BARU
+    
+    // CSV Parser Function
+    function parseCSV(csvText) {
+        const lines = csvText.trim().split('\n');
+        // Handle potential empty CSV
+        if (lines.length <= 1 && lines[0].trim() === '') {
+            return [];
+        }
+        const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+        const data = [];
+        
+        for (let i = 1; i < lines.length; i++) {
+            const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
+            // Skip rows that are clearly empty or just header
+            if (values.every(v => v === '') && values.length === headers.length) {
+                continue;
+            }
+            const row = {};
+            headers.forEach((header, index) => {
+                // Ensure there is a value for the header, even if it's an empty string
+                row[header] = values[index] !== undefined ? values[index] : '';
+            });
+            data.push(row);
+        }
+        
+        return data.filter(row => Object.values(row).some(v => v !== '')); // Final filter for non-empty rows
+    }
+
+    // Load data from Google Sheets
+    async function loadSheetData(sheetName) {
+        try {
+            const response = await fetch(SHEETS_URLS[sheetName]);
+            const csvText = await response.text();
+            return parseCSV(csvText);
+        } catch (error) {
+            console.error(`Error loading ${sheetName}:`, error);
+            return [];
+        }
+    }
+
+    // Initialize App
+    document.addEventListener('DOMContentLoaded', function() {
+        checkLoginStatus();
+        setupEventListeners();
+    });
+
+    // Check Login Status
+    function checkLoginStatus() {
+        const user = localStorage.getItem('currentUser');
+        if (user) {
+            currentUser = JSON.parse(user);
+            showMainApp();
+        } else {
+            showLoginPage();
+        }
+    }
+
+    // Setup Event Listeners
+    function setupEventListeners() {
+        // Login Form
+        document.getElementById('loginForm').addEventListener('submit', handleLogin);
+
+        // Logout Buttons
+        document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+        document.getElementById('logoutBtnMobile').addEventListener('click', handleLogout);
+
+        // Navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const page = this.dataset.page;
+                navigateToPage(page);
+            });
+        });
+
+        document.querySelectorAll('.nav-link-mobile').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const page = this.dataset.page;
+                navigateToPage(page);
+            });
+        });
+
+        // Mobile Menu
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            document.getElementById('mobileMenuModal').classList.remove('hidden');
+        });
+
+        document.getElementById('mobileMenuModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.add('hidden');
+            }
+        });
+
+        // Barang Modal
+        document.getElementById('addBarangBtn').addEventListener('click', function() {
+            openBarangModal();
+        });
+
+        document.getElementById('refreshBarangBtn').addEventListener('click', function() {
+            loadBarang();
+        });
+
+        document.getElementById('cancelBarangBtn').addEventListener('click', function() {
+            closeBarangModal();
+        });
+
+        document.getElementById('barangForm').addEventListener('submit', handleBarangSubmit);
+
+        document.getElementById('barangModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeBarangModal();
+            }
+        });
+
+        // Kegiatan Modal
+        document.getElementById('addKegiatanBtn').addEventListener('click', function() {
+            openKegiatanModal();
+        });
+
+        document.getElementById('refreshKegiatanBtn').addEventListener('click', function() {
+            loadKegiatan();
+        });
+
+        document.getElementById('cancelKegiatanBtn').addEventListener('click', function() {
+            closeKegiatanModal();
+        });
+
+        document.getElementById('kegiatanForm').addEventListener('submit', handleKegiatanSubmit);
+
+        document.getElementById('kegiatanModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeKegiatanModal();
+            }
+        });
+        
+        // Package Modal (BARU)
+        document.getElementById('addPackageBtn')?.addEventListener('click', function() {
+            openPackageModal();
+        });
+
+        document.getElementById('cancelPackageBtn')?.addEventListener('click', function() {
+            closePackageModal();
+        });
+
+        document.getElementById('packageForm')?.addEventListener('submit', handlePackageSubmit);
+
+        document.getElementById('packageModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePackageModal();
+            }
+        });
+
+        // User Modal
+        document.getElementById('addUserBtn').addEventListener('click', function() {
+            openUserModal();
+        });
+
+        document.getElementById('cancelUserBtn').addEventListener('click', function() {
+            closeUserModal();
+        });
+
+        document.getElementById('userForm').addEventListener('submit', handleUserSubmit);
+
+        document.getElementById('userModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeUserModal();
+            }
+        });
+
+        // Staff Detail Modal
+        document.getElementById('cancelStaffDetailBtn').addEventListener('click', function() {
+            closeStaffDetailModal();
+        });
+
+        document.getElementById('confirmEquipmentBtn').addEventListener('click', handleEquipmentConfirmation);
+
+        document.getElementById('staffDetailModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeStaffDetailModal();
+            }
+        });
+
+        // Refresh buttons
+        document.getElementById('refreshBarangMasukBtn').addEventListener('click', function() {
+            loadBarangMasuk();
+        });
+
+        document.getElementById('refreshBarangKeluarBtn').addEventListener('click', function() {
+            loadBarangKeluar();
+        });
+        
+        // Filter buttons
+        document.getElementById('applyMasukFilterBtn').addEventListener('click', function() {
+            loadBarangMasuk(); // Panggil ulang load dengan data filter
+        });
+        
+        document.getElementById('applyKeluarFilterBtn').addEventListener('click', function() {
+            loadBarangKeluar(); // Panggil ulang load dengan data filter
+        });
+
+        // Log Aktivitas Staff Buttons (BARU)
+        document.getElementById('refreshStaffActivityLogBtn')?.addEventListener('click', function() {
+            loadStaffActivityLog();
+        });
+
+        document.getElementById('applyLogFilterBtn')?.addEventListener('click', function() {
+            loadStaffActivityLog();
+        });
+
+        // Expose functions to global scope for inline onclick/onchange
+        window.editBarang = editBarang;
+        window.deleteBarang = deleteBarang;
+        window.editKegiatan = editKegiatan;
+        window.deleteKegiatan = deleteKegiatan;
+        window.viewKegiatanDetail = viewKegiatanDetail;
+        window.finishKegiatan = finishKegiatan;
+        window.updateKegiatanStatusAdmin = updateKegiatanStatusAdmin;
+        window.editUser = editUser;
+        window.deleteUser = deleteUser;
+        window.editPackage = editPackage; // BARU
+        window.deletePackage = deletePackage; // BARU
+    }
+
+    // Login Handler
+    async function handleLogin(e) {
+        e.preventDefault();
+        showLoading();
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        try {
+            // Load users data from Google Sheets
+            usersData = await loadSheetData('users');
+            
+            // Find user with matching credentials
+            const user = usersData.find(u => 
+                u.username === username && u.password === password
+            );
+
+            hideLoading();
+
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                showToast('Login berhasil!', 'success');
+                showMainApp();
+            } else {
+                showToast('Username atau password salah', 'error');
+            }
+        } catch (error) {
+            hideLoading();
+            showToast('Terjadi kesalahan saat login. Periksa koneksi internet.', 'error');
+            console.error('Login error:', error);
+        }
+    }
+
+    // Logout Handler
+    function handleLogout() {
+        localStorage.removeItem('currentUser');
+        currentUser = null;
+        showLoginPage();
+        showToast('Berhasil keluar', 'success');
+    }
+
+    // Show Login Page
+    function showLoginPage() {
+        document.getElementById('loginPage').classList.remove('hidden');
+        document.getElementById('mainApp').classList.add('hidden');
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
+    }
+
+    // Show Main App
+    function showMainApp() {
+        document.getElementById('loginPage').classList.add('hidden');
+        document.getElementById('mainApp').classList.remove('hidden');
+
+        // Update user info
+        const initial = currentUser.nama.charAt(0).toUpperCase();
+        document.getElementById('userInitialSidebar').textContent = initial;
+        document.getElementById('userInitialMobile').textContent = initial;
+        document.getElementById('userNameSidebar').textContent = currentUser.nama;
+        document.getElementById('userNameMobile').textContent = currentUser.nama;
+        document.getElementById('usernameSidebar').textContent = '@' + currentUser.username;
+        document.getElementById('usernameMobile').textContent = '@' + currentUser.username;
+        document.getElementById('userRoleSidebar').textContent = currentUser.role.toUpperCase();
+        document.getElementById('userRoleMobile').textContent = currentUser.role.toUpperCase();
+
+        // Show/hide admin menu and buttons
+        if (currentUser.role === 'admin') {
+            document.getElementById('usersMenuSidebar').classList.remove('hidden');
+            document.getElementById('usersMenuMobile').classList.remove('hidden');
+            document.getElementById('staffActivityLogMenuSidebar').classList.remove('hidden'); 
+            document.getElementById('staffActivityLogMenuMobile').classList.remove('hidden'); 
+            document.getElementById('packagesMenuSidebar').classList.remove('hidden'); // BARU
+            document.getElementById('packagesMenuMobile').classList.remove('hidden'); // BARU
+            document.getElementById('addBarangBtn').classList.remove('hidden');
+            document.getElementById('addKegiatanBtn').classList.remove('hidden');
+            document.getElementById('addUserBtn').classList.remove('hidden');
+        } else {
+            document.getElementById('usersMenuSidebar').classList.add('hidden');
+            document.getElementById('usersMenuMobile').classList.add('hidden');
+            document.getElementById('staffActivityLogMenuSidebar').classList.add('hidden'); 
+            document.getElementById('staffActivityLogMenuMobile').classList.add('hidden'); 
+            document.getElementById('packagesMenuSidebar').classList.add('hidden'); // BARU
+            document.getElementById('packagesMenuMobile').classList.add('hidden'); // BARU
+            document.getElementById('addBarangBtn').classList.add('hidden');
+            document.getElementById('addKegiatanBtn').classList.add('hidden');
+            document.getElementById('addUserBtn').classList.add('hidden');
+        }
+
+        // Load initial data
+        navigateToPage('dashboard');
+    }
+
+    // Navigate to Page
+    function navigateToPage(page) {
+        // Hide all pages
+        document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+
+        // Remove active state from all nav links
+        document.querySelectorAll('.nav-link, .nav-link-mobile').forEach(link => {
+            link.classList.remove('bg-blue-50', 'text-blue-600');
+        });
+
+        // Show selected page
+        document.getElementById(page + 'Page').classList.remove('hidden');
+
+        // Add active state to current nav link
+        document.querySelectorAll(`[data-page="${page}"]`).forEach(link => {
+            link.classList.add('bg-blue-50', 'text-blue-600');
+        });
+
+        // Load page data
+        switch(page) {
+            case 'dashboard':
+                loadDashboard();
+                break;
+            case 'barang':
+                loadBarang();
+                break;
+            case 'kegiatan':
+                loadKegiatan();
+                break;
+            case 'users':
+                if (currentUser.role === 'admin') {
+                    loadUsers();
+                }
+                break;
+            case 'packages': // BARU
+                if (currentUser.role === 'admin') {
+                    loadPackages();
+                }
+                break;
+            case 'barang-masuk':
+                loadBarangMasuk();
+                break;
+            case 'barang-keluar':
+                loadBarangKeluar();
+                break;
+            case 'staff-activity-log': 
+                if (currentUser.role === 'admin') {
+                    loadStaffActivityLog();
+                }
+                break;
+        }
+
+        // Close mobile menu if open
+        document.getElementById('mobileMenuModal').classList.add('hidden');
+    }
+
+    // Load Dashboard
+    async function loadDashboard() {
+        try {
+            // Load data
+            const [allBarangData, allKegiatanData] = await Promise.all([
+                loadSheetData('barang'),
+                loadSheetData('kegiatan')
+            ]);
+            
+            barangData = allBarangData; // Update global state
+            kegiatanData = allKegiatanData; // Update global state
+
+            // Update statistics
+            const totalBarang = barangData.reduce((sum, b) => sum + (parseInt(b.jumlah_dimiliki) || 0), 0);
+            document.getElementById('totalBarang').textContent = totalBarang;
+            
+            const barangDigunakan = barangData.reduce((sum, b) => sum + (parseInt(b.jumlah_digunakan) || 0), 0);
+            document.getElementById('barangDigunakan').textContent = barangDigunakan;
+
+            const today = new Date().toISOString().split('T')[0];
+            const kegiatanHariIni = kegiatanData.filter(k => k.tanggal_kegiatan === today && k.status_kegiatan !== 'Selesai' && k.status_kegiatan !== 'Dibatalkan').length;
+            document.getElementById('kegiatanHariIni').textContent = kegiatanHariIni;
+
+            // Update upcoming activities
+            const upcomingActivities = kegiatanData
+                .filter(k => new Date(k.tanggal_kegiatan) >= new Date(today) && k.status_kegiatan !== 'Selesai' && k.status_kegiatan !== 'Dibatalkan')
+                .sort((a, b) => new Date(a.tanggal_kegiatan) - new Date(b.tanggal_kegiatan))
+                .slice(0, 5);
+
+            const upcomingHTML = upcomingActivities.length > 0 
+                ? upcomingActivities.map(k => `
+                    <div class="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                        <div class="flex-shrink-0 h-10 w-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <svg class="h-5 w-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-gray-900">${k.nama_kegiatan}</p>
+                            <p class="text-xs text-gray-500">${formatDate(k.tanggal_kegiatan)} • ${k.jam_mulai} - ${k.jam_selesai}</p>
+                            <p class="text-xs text-gray-500">${k.lokasi_kegiatan}</p>
+                        </div>
+                    </div>
+                `).join('')
+                : '<div class="text-center py-4 text-gray-500">Tidak ada kegiatan mendatang</div>';
+
+            document.getElementById('upcomingActivities').innerHTML = upcomingHTML;
+
+            // Update item status
+            const statusCounts = {
+                'Tersedia': 0,
+                'Digunakan': 0,
+                'Maintenance': 0
+            };
+
+            barangData.forEach(b => {
+                const available = (parseInt(b.jumlah_dimiliki) || 0) - (parseInt(b.jumlah_digunakan) || 0);
+                const used = parseInt(b.jumlah_digunakan) || 0;
+
+                if (b.status_barang === 'Tersedia' && available > 0) {
+                    statusCounts['Tersedia']++;
+                }
+                if (b.status_barang === 'Digunakan' && used > 0) {
+                    statusCounts['Digunakan']++;
+                }
+                if (b.status_barang === 'Maintenance') {
+                    statusCounts['Maintenance']++;
+                }
+            });
+
+            const statusHTML = `
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                        <span class="text-sm font-medium text-gray-700">Tersedia (Item unik)</span>
+                        <span class="text-lg font-bold text-green-600">${statusCounts['Tersedia']}</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                        <span class="text-sm font-medium text-gray-700">Digunakan (Item unik)</span>
+                        <span class="text-lg font-bold text-blue-600">${statusCounts['Digunakan']}</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+                        <span class="text-sm font-medium text-gray-700">Maintenance (Item unik)</span>
+                        <span class="text-lg font-bold text-yellow-600">${statusCounts['Maintenance']}</span>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('itemStatus').innerHTML = statusHTML;
+
+        } catch (error) {
+            console.error('Error loading dashboard:', error);
+            showToast('Gagal memuat data dashboard', 'error');
+        }
+    }
+
+    // Load Barang
+    async function loadBarang() {
+        try {
+            barangData = await loadSheetData('barang');
+
+            const tbody = document.getElementById('barangTableBody');
+            
+            if (barangData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">Belum ada data barang</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = barangData.map(item => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 text-sm text-gray-900">${item.id_barang}</td>
+                    <td class="px-6 py-4 text-sm font-medium text-gray-900">${item.nama_barang}</td>
+                    <td class="px-6 py-4 text-sm text-gray-900">${item.jumlah_dimiliki}</td>
+                    <td class="px-6 py-4 text-sm text-gray-900">${item.jumlah_digunakan}</td>
+                    <td class="px-6 py-4 text-sm font-bold text-gray-900">${(parseInt(item.jumlah_dimiliki) || 0) - (parseInt(item.jumlah_digunakan) || 0)}</td> <td class="px-6 py-4">
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadgeClass(item.status_barang)}">
+                            ${item.status_barang}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-sm">
+                        <div class="flex space-x-2">
+                            ${currentUser.role === 'admin' ? `
+                                <button onclick="editBarang('${item.id_barang}')" class="text-blue-600 hover:text-blue-800" title="Edit">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </button>
+                                <button onclick="deleteBarang('${item.id_barang}')" class="text-red-600 hover:text-red-800" title="Hapus">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                </button>
+                            ` : 'Tidak ada aksi'}
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        } catch (error) {
+            console.error('Error loading barang:', error);
+            showToast('Gagal memuat data barang', 'error');
+        }
+    }
+
+    // Load Packages (BARU)
+    async function loadPackages() {
+        if (currentUser.role !== 'admin') return;
+
+        try {
+            packagesData = await loadSheetData('packages');
+            barangData = await loadSheetData('barang'); // Pastikan data barang dimuat untuk detail
+
+            const tbody = document.getElementById('packagesTableBody');
+            
+            if (packagesData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">Belum ada data paket peralatan</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = packagesData.map(item => {
+                let detailHtml = '';
+                try {
+                    const equipmentList = JSON.parse(item.equipment_data);
+                    detailHtml = equipmentList.map(eq => {
+                        const barang = barangData.find(b => b.id_barang === eq.id);
+                        return `<span class="inline-block bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">${barang ? barang.nama_barang : 'ID Barang Tidak Dikenal'} (${eq.jumlah})</span>`;
+                    }).join('');
+                } catch (e) {
+                    detailHtml = '<span class="text-red-500 text-xs">Data Error</span>';
+                }
+
+                return `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 text-sm text-gray-900">${item.id_paket}</td>
+                    <td class="px-6 py-4 text-sm font-medium text-gray-900">${item.nama_paket}</td>
+                    <td class="px-6 py-4 text-sm text-gray-900">${detailHtml}</td>
+                    <td class="px-6 py-4 text-sm">
+                        <div class="flex space-x-2">
+                            <button onclick="editPackage('${item.id_paket}')" class="text-blue-600 hover:text-blue-800" title="Edit">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                            </button>
+                            <button onclick="deletePackage('${item.id_paket}', '${item.nama_paket}')" class="text-red-600 hover:text-red-800" title="Hapus">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        } catch (error) {
+            console.error('Error loading packages:', error);
+            showToast('Gagal memuat data paket', 'error');
+        }
+    }
+
+
+    // Load Kegiatan
+    async function loadKegiatan() {
+        try {
+            // Load all necessary data concurrently
+            const [kegiatanDataFull, staffData, equipmentConfirmations, allUsers] = await Promise.all([
+                loadSheetData('kegiatan'),
+                loadSheetData('kegiatan_staff'),
+                loadSheetData('equipment_confirmations'),
+                loadSheetData('users') // Untuk mendapatkan data user lengkap
+            ]);
+            
+            kegiatanStaffData = staffData;
+            equipmentConfirmationsData = equipmentConfirmations;
+            usersData = allUsers; // Update global users data
+            kegiatanData = kegiatanDataFull; // Store the full data for later use
+
+            // If user is staff, filter kegiatans based on assignments
+            if (currentUser.role === 'staff') {
+                const assignedKegiatanIds = kegiatanStaffData
+                    .filter(ks => ks.staff_id === currentUser.id)
+                    .map(ks => ks.kegiatan_id);
+                
+                // Only show activities assigned to the staff 
+                kegiatanData = kegiatanDataFull.filter(k => 
+                    assignedKegiatanIds.includes(k.id_kegiatan)
+                );
+            }
+            
+            // Sort by date (newest first)
+            kegiatanData.sort((a, b) => {
+                // Ensure date parsing is safe
+                const dateA = new Date(a.tanggal_kegiatan).getTime();
+                const dateB = new Date(b.tanggal_kegiatan).getTime();
+                return dateB - dateA;
+            });
+
+            const tbody = document.getElementById('kegiatanTableBody');
+            
+            if (kegiatanData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-gray-500">Belum ada data kegiatan</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = kegiatanData.map(item => {
+                // Check if the current user (staff) has confirmed equipment for this activity
+                const isConfirmedByStaff = equipmentConfirmationsData.some(
+                    ec => ec.kegiatan_id === item.id_kegiatan && ec.staff_id === currentUser.id
+                );
+
+                return `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 text-sm text-gray-900">${item.id_kegiatan}</td>
+                    <td class="px-6 py-4 text-sm font-medium text-gray-900">${item.nama_kegiatan}</td>
+                    <td class="px-6 py-4 text-sm text-gray-900">${item.jenis_kegiatan}</td>
+                    <td class="px-6 py-4 text-sm text-gray-900">${item.lokasi_kegiatan}</td>
+                    <td class="px-6 py-4 text-sm text-gray-900">${formatDate(item.tanggal_kegiatan)}</td>
+                    <td class="px-6 py-4 text-sm text-gray-900">${item.jam_mulai} - ${item.jam_selesai}</td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusKegiatanBadgeClass(item.status_kegiatan)}">
+                            ${item.status_kegiatan}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-sm">
+                        <div class="flex space-x-2 items-center">
+                            ${currentUser.role === 'admin' ? `
+                                <button onclick="editKegiatan('${item.id_kegiatan}')" class="text-blue-600 hover:text-blue-800" title="Edit">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </button>
+                                <button onclick="deleteKegiatan('${item.id_kegiatan}')" class="text-red-600 hover:text-red-800" title="Hapus">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                </button>
+                                <select onchange="updateKegiatanStatusAdmin('${item.id_kegiatan}', this.value)" class="text-xs border rounded-lg p-1">
+                                    <option value="Terjadwal" ${item.status_kegiatan === 'Terjadwal' ? 'selected' : ''}>Terjadwal</option>
+                                    <option value="Berlangsung" ${item.status_kegiatan === 'Berlangsung' ? 'selected' : ''}>Berlangsung</option>
+                                    <option value="Selesai" ${item.status_kegiatan === 'Selesai' ? 'selected' : ''}>Selesai</option>
+                                    <option value="Dibatalkan" ${item.status_kegiatan === 'Dibatalkan' ? 'selected' : ''}>Dibatalkan</option>
+                                </select>
+                            ` : `
+                                <button onclick="viewKegiatanDetail('${item.id_kegiatan}')" class="text-blue-600 hover:text-blue-800" title="Lihat Detail/Konfirmasi Peralatan">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                </button>
+                                ${item.status_kegiatan === 'Berlangsung' && isConfirmedByStaff ? `
+                                    <button onclick="finishKegiatan('${item.id_kegiatan}')" class="text-green-600 hover:text-green-800" title="Selesaikan Kegiatan & Kembalikan Barang">
+                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                    </button>
+                                ` : ''}
+                            `}
+                        </div>
+                    </td>
+                </tr>
+                `}).join('');
+        } catch (error) {
+            console.error('Error loading kegiatan:', error);
+            showToast('Gagal memuat data kegiatan', 'error');
+        }
+    }
+
+    // Fungsi Admin untuk mengubah status cepat
+    async function updateKegiatanStatusAdmin(id, newStatus) {
+        if (currentUser.role !== 'admin') return;
+
+        showLoading();
+
+        const item = kegiatanData.find(k => k.id_kegiatan === id);
+        if (!item) {
+            hideLoading();
+            showToast('Kegiatan tidak ditemukan', 'error');
+            return;
+        }
+        
+        // Cek jika status diganti menjadi Selesai (dipaksa oleh Admin)
+        if (newStatus === 'Selesai') {
+            // Menggunakan fungsi finishKegiatan yang sama untuk konsistensi pencatatan
+            try {
+                // Panggil finishKegiatan di Apps Script
+                const finishFormData = new FormData();
+                finishFormData.append('action', 'finishKegiatan');
+                finishFormData.append('kegiatan_id', id);
+                finishFormData.append('staff_id', currentUser.id);
+                finishFormData.append('staff_name', currentUser.nama);
+
+                const finishResponse = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: finishFormData
+                });
+                const finishResult = await finishResponse.json();
+
+                hideLoading();
+                if (finishResult.success) {
+                    showToast('Kegiatan berhasil diselesaikan (oleh Admin) dan barang dikembalikan ke inventaris', 'success');
+                    loadKegiatan();
+                } else {
+                    // Jika gagal, tampilkan pesan error dan muat ulang data untuk menampilkan status lama
+                    showToast('Gagal menyelesaikan kegiatan (oleh Admin): ' + finishResult.message, 'error');
+                    loadKegiatan(); 
+                }
+            } catch (error) {
+                hideLoading();
+                showToast('Terjadi kesalahan saat menyelesaikan kegiatan', 'error');
+                console.error('Error finishing activity:', error);
+            }
+            return;
+        }
+        
+        // Cek jika status diganti menjadi Dibatalkan
+        if (newStatus === 'Dibatalkan') {
+             // Jika kegiatan sebelumnya Berlangsung, kita harus memastikan barang dikembalikan
+             if (item.status_kegiatan === 'Berlangsung') {
+                const confirmCancel = confirm(`Kegiatan "${item.nama_kegiatan}" berstatus Berlangsung. Membatalkan akan mengembalikan semua barang yang tercatat Barang Keluar ke inventaris. Lanjutkan?`);
+                if (!confirmCancel) {
+                    hideLoading();
+                    loadKegiatan(); // Reload to revert status in dropdown
+                    return;
+                }
+             }
+        }
+
+
+        // Untuk status selain 'Selesai' (Terjadwal, Berlangsung, Dibatalkan)
+        const formData = new FormData();
+        formData.append('action', 'updateKegiatan');
+        formData.append('id', item.id_kegiatan);
+        formData.append('nama_kegiatan', item.nama_kegiatan);
+        formData.append('jenis_kegiatan', item.jenis_kegiatan);
+        formData.append('lokasi_kegiatan', item.lokasi_kegiatan);
+        formData.append('tanggal_kegiatan', item.tanggal_kegiatan);
+        formData.append('jam_mulai', item.jam_mulai);
+        formData.append('jam_selesai', item.jam_selesai);
+        formData.append('status_kegiatan', newStatus);
+        
+        // Ambil staff dan package yang sudah ada dari data state
+        const existingStaff = kegiatanStaffData
+            .filter(ks => ks.kegiatan_id === item.id_kegiatan)
+            .map(ks => ks.staff_id);
+        
+        // Asumsi equipment_id adalah ID Paket (hanya satu)
+        const equipmentAssignments = await loadSheetData('kegiatan_equipment');
+        const existingPackageAssignment = equipmentAssignments.find(ke => ke.kegiatan_id === item.id_kegiatan);
+        const existingPackageId = existingPackageAssignment ? existingPackageAssignment.equipment_id : null;
+
+        formData.append('staff', JSON.stringify(existingStaff));
+        formData.append('equipment', JSON.stringify(existingPackageId ? [existingPackageId] : [])); // Kirim sebagai array
+
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            hideLoading();
+
+            if (result.success) {
+                showToast(`Status kegiatan diubah menjadi ${newStatus}`, 'success');
+                loadKegiatan();
+            } else {
+                showToast('Gagal mengubah status kegiatan: ' + result.message, 'error');
+                loadKegiatan(); // Reload to show correct status if update failed
+            }
+        } catch (error) {
+            hideLoading();
+            showToast('Terjadi kesalahan saat mengubah status', 'error');
+            console.error('Error updating status:', error);
+        }
+    }
+
+    // Load Barang Masuk
+    async function loadBarangMasuk() {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        try {
+            const [masukData, allKegiatanData, allUsersData, allKegiatanStaff] = await Promise.all([
+                loadSheetData('barang_masuk'),
+                loadSheetData('kegiatan'),
+                loadSheetData('users'),
+                loadSheetData('kegiatan_staff') 
+            ]);
+            
+            barangMasukData = masukData;
+            kegiatanData = allKegiatanData;
+            usersData = allUsersData;
+            kegiatanStaffData = allKegiatanStaff; 
+
+            // Penerapan Filter Tanggal
+            const startDate = document.getElementById('filterMasukStart').value;
+            const endDate = document.getElementById('filterMasukEnd').value;
+            
+            let filteredData = barangMasukData;
+
+            if (startDate && endDate) {
+                const start = new Date(startDate).setHours(0, 0, 0, 0);
+                const end = new Date(endDate).setHours(23, 59, 59, 999);
+                
+                filteredData = barangMasukData.filter(item => {
+                    const itemDate = new Date(item.tanggal_konfirmasi).getTime();
+                    return itemDate >= start && itemDate <= end;
+                });
+            }
+
+
+            const tbody = document.getElementById('barangMasukTableBody');
+            
+            if (filteredData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">Belum ada data barang masuk</td></tr>';
+                return;
+            }
+
+            // Sort by ID descending
+            filteredData.sort((a, b) => (parseInt(b.id) || 0) - (parseInt(a.id) || 0));
+
+
+            tbody.innerHTML = filteredData.map(item => {
+                const kegiatan = kegiatanData.find(k => k.id_kegiatan === item.kegiatan_id);
+                
+                // MENGAMBIL SEMUA STAFF YANG TERLIBAT DALAM KEGIATAN
+                const assignedStaffIds = kegiatanStaffData
+                    .filter(ks => ks.kegiatan_id === item.kegiatan_id)
+                    .map(ks => ks.staff_id);
+                const assignedStaffNames = usersData
+                    .filter(u => assignedStaffIds.includes(u.id))
+                    .map(u => u.nama);
+                const staffDisplay = assignedStaffNames.length > 0 ? assignedStaffNames.join(', ') : 'N/A';
+                
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 text-sm text-gray-900">${item.id}</td>
+                        <td class="px-6 py-4 text-sm text-gray-900">${kegiatan ? kegiatan.nama_kegiatan : item.nama_kegiatan || 'N/A'}</td>
+                        <td class="px-6 py-4 text-sm font-medium text-gray-900">${item.nama_barang}</td>
+                        <td class="px-6 py-4 text-sm text-gray-900">${item.jumlah}</td>
+                        <td class="px-6 py-4 text-sm text-gray-900">${staffDisplay}</td> <td class="px-6 py-4 text-sm text-gray-900">${formatDate(item.tanggal_konfirmasi)}</td> </tr>
+                `;
+            }).join('');
+        } catch (error) {
+            console.error('Error loading barang masuk:', error);
+            showToast('Gagal memuat data barang masuk', 'error');
+        }
+    }
+
+    // Load Barang Keluar
+    async function loadBarangKeluar() {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        try {
+            const [keluarData, allKegiatanData, allUsersData, allKegiatanStaff] = await Promise.all([
+                loadSheetData('barang_keluar'),
+                loadSheetData('kegiatan'),
+                loadSheetData('users'),
+                loadSheetData('kegiatan_staff')
+            ]);
+
+            barangKeluarData = keluarData;
+            kegiatanData = allKegiatanData;
+            usersData = allUsersData;
+            kegiatanStaffData = allKegiatanStaff;
+
+            // Penerapan Filter Tanggal
+            const startDate = document.getElementById('filterKeluarStart').value;
+            const endDate = document.getElementById('filterKeluarEnd').value;
+            
+            let filteredData = barangKeluarData;
+
+            if (startDate && endDate) {
+                const start = new Date(startDate).setHours(0, 0, 0, 0);
+                const end = new Date(endDate).setHours(23, 59, 59, 999);
+                
+                filteredData = barangKeluarData.filter(item => {
+                    const itemDate = new Date(item.tanggal_konfirmasi).getTime();
+                    return itemDate >= start && itemDate <= end;
+                });
+            }
+
+            const tbody = document.getElementById('barangKeluarTableBody');
+            
+            if (filteredData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">Belum ada data barang keluar</td></tr>';
+                return;
+            }
+            
+            // Sort by ID descending
+            filteredData.sort((a, b) => (parseInt(b.id) || 0) - (parseInt(a.id) || 0));
+
+            tbody.innerHTML = filteredData.map(item => {
+                const kegiatan = kegiatanData.find(k => k.id_kegiatan === item.kegiatan_id);
+                
+                // MENGAMBIL SEMUA STAFF YANG TERLIBAT DALAM KEGIATAN
+                const assignedStaffIds = kegiatanStaffData
+                    .filter(ks => ks.kegiatan_id === item.kegiatan_id)
+                    .map(ks => ks.staff_id);
+                const assignedStaffNames = usersData
+                    .filter(u => assignedStaffIds.includes(u.id))
+                    .map(u => u.nama);
+                const staffDisplay = assignedStaffNames.length > 0 ? assignedStaffNames.join(', ') : 'N/A';
+                
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 text-sm text-gray-900">${item.id}</td>
+                        <td class="px-6 py-4 text-sm text-gray-900">${kegiatan ? kegiatan.nama_kegiatan : item.nama_kegiatan || 'N/A'}</td>
+                        <td class="px-6 py-4 text-sm font-medium text-gray-900">${item.nama_barang}</td>
+                        <td class="px-6 py-4 text-sm text-gray-900">${item.jumlah}</td>
+                        <td class="px-6 py-4 text-sm text-gray-900">${staffDisplay}</td> <td class="px-6 py-4 text-sm text-gray-900">${formatDate(item.tanggal_konfirmasi)}</td> </tr>
+                `;
+            }).join('');
+        } catch (error) {
+            console.error('Error loading barang keluar:', error);
+            showToast('Gagal memuat data barang keluar', 'error');
+        }
+    }
+
+    // Load Staff Activity Log (BARU)
+    async function loadStaffActivityLog() {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        if (currentUser.role !== 'admin') return;
+
+        try {
+            const [logData, allUsers] = await Promise.all([
+                loadSheetData('staff_activity_log'),
+                loadSheetData('users')
+            ]);
+            
+            staffActivityLogData = logData;
+            usersData = allUsers;
+
+            const staffFilterSelect = document.getElementById('filterStaff');
+            // Isi ulang opsi Staff jika belum terisi
+            if (staffFilterSelect.options.length <= 1) { 
+                const staffList = allUsers.filter(u => u.role === 'staff').sort((a, b) => a.nama.localeCompare(b.nama));
+                staffFilterSelect.innerHTML = '<option value="">Semua Staff</option>' + staffList.map(u => 
+                    `<option value="${u.id}">${u.nama}</option>`
+                ).join('');
+            }
+
+            // Penerapan Filter
+            const startDate = document.getElementById('filterLogStart').value;
+            const endDate = document.getElementById('filterLogEnd').value;
+            const selectedStaffId = staffFilterSelect.value;
+            
+            let filteredData = staffActivityLogData;
+
+            if (startDate && endDate) {
+                const start = new Date(startDate).setHours(0, 0, 0, 0);
+                const end = new Date(endDate).setHours(23, 59, 59, 999);
+                
+                filteredData = filteredData.filter(item => {
+                    const itemDate = new Date(item.tanggal_kegiatan).getTime();
+                    return itemDate >= start && itemDate <= end;
+                });
+            }
+            
+            if (selectedStaffId) {
+                filteredData = filteredData.filter(item => item.staff_id === selectedStaffId);
+            }
+
+            const tbody = document.getElementById('staffActivityLogTableBody');
+            
+            if (filteredData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">Tidak ada log aktivitas staff yang ditemukan dengan filter ini.</td></tr>';
+                return;
+            }
+
+            // Sort by date (newest first)
+            filteredData.sort((a, b) => {
+                const dateA = new Date(a.tanggal_kegiatan).getTime();
+                const dateB = new Date(b.tanggal_kegiatan).getTime();
+                return dateB - dateA;
+            });
+
+            tbody.innerHTML = filteredData.map(item => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 text-sm text-gray-900">${item.id}</td>
+                    <td class="px-6 py-4 text-sm font-medium text-gray-900">${item.nama_kegiatan}</td>
+                    <td class="px-6 py-4 text-sm text-gray-900">${item.nama_staff}</td>
+                    <td class="px-6 py-4 text-sm text-gray-900">${formatDate(item.tanggal_kegiatan)}</td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusKegiatanBadgeClass(item.status_kegiatan)}">
+                            ${item.status_kegiatan}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+
+        } catch (error) {
+            console.error('Error loading staff activity log:', error);
+            showToast('Gagal memuat log aktivitas staff', 'error');
+        }
+    }
+    
+    // Load Users
+    async function loadUsers() {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        if (currentUser.role !== 'admin') return;
+
+        try {
+            usersData = await loadSheetData('users');
+
+            const tbody = document.getElementById('usersTableBody');
+            
+            if (usersData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">Belum ada data pengguna</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = usersData.map(user => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 text-sm text-gray-900">${user.id}</td>
+                    <td class="px-6 py-4 text-sm font-medium text-gray-900">${user.nama}</td>
+                    <td class="px-6 py-4 text-sm text-gray-900">${user.username}</td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}">
+                            ${user.role.toUpperCase()}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-sm">
+                        <div class="flex space-x-2">
+                            <button onclick="editUser('${user.id}')" class="text-blue-600 hover:text-blue-800" title="Edit">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                </svg>
+                            </button>
+                            <button onclick="deleteUser('${user.id}')" class="text-red-600 hover:text-red-800" title="Hapus">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        } catch (error) {
+            console.error('Error loading users:', error);
+            showToast('Gagal memuat data pengguna', 'error');
+        }
+    }
+
+
+    // Barang Modal Functions
+    function openBarangModal(id = null) {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        const modal = document.getElementById('barangModal');
+        const form = document.getElementById('barangForm');
+        const title = document.getElementById('barangModalTitle');
+
+        form.reset();
+
+        if (id) {
+            const item = barangData.find(b => b.id_barang === id);
+            if (item) {
+                title.textContent = 'Edit Barang';
+                document.getElementById('barangId').value = item.id_barang;
+                document.getElementById('namaBarang').value = item.nama_barang;
+                document.getElementById('jumlahDimiliki').value = item.jumlah_dimiliki;
+                document.getElementById('jumlahDigunakan').value = item.jumlah_digunakan;
+                document.getElementById('statusBarang').value = item.status_barang;
+            }
+        } else {
+            title.textContent = 'Tambah Barang';
+            document.getElementById('barangId').value = '';
+            // Set default status to Tersedia for new item
+            document.getElementById('statusBarang').value = 'Tersedia';
+            document.getElementById('jumlahDigunakan').value = 0;
+        }
+
+        modal.classList.remove('hidden');
+    }
+
+    function closeBarangModal() {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        document.getElementById('barangModal').classList.add('hidden');
+    }
+
+    async function handleBarangSubmit(e) {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        e.preventDefault();
+        showLoading();
+
+        const isEdit = document.getElementById('barangId').value;
+        const jumlahDimiliki = parseInt(document.getElementById('jumlahDimiliki').value);
+        const jumlahDigunakan = parseInt(document.getElementById('jumlahDigunakan').value);
+
+        if (jumlahDigunakan > jumlahDimiliki) {
+            hideLoading();
+            showToast('Jumlah Digunakan tidak boleh melebihi Jumlah Dimiliki', 'error');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('action', isEdit ? 'updateBarang' : 'addBarang');
+        formData.append('id', isEdit);
+        formData.append('nama_barang', document.getElementById('namaBarang').value);
+        formData.append('jumlah_dimiliki', jumlahDimiliki);
+        formData.append('jumlah_digunakan', jumlahDigunakan);
+        formData.append('status_barang', document.getElementById('statusBarang').value);
+
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            hideLoading();
+
+            if (result.success) {
+                showToast(result.message || 'Data barang berhasil disimpan', 'success');
+                closeBarangModal();
+                loadBarang(); // Reload data
+            } else {
+                showToast(result.message || 'Gagal menyimpan data barang', 'error');
+            }
+        } catch (error) {
+            hideLoading();
+            showToast('Terjadi kesalahan saat menyimpan data', 'error');
+            console.error('Error:', error);
+        }
+    }
+
+    function editBarang(id) {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        openBarangModal(id);
+    }
+
+    async function deleteBarang(id) {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        const item = barangData.find(b => b.id_barang === id);
+        if (!item) return;
+
+        // Pencegahan jika barang masih digunakan
+        if (parseInt(item.jumlah_digunakan) > 0) {
+            showToast('Tidak dapat menghapus barang yang sedang digunakan (' + item.jumlah_digunakan + ')', 'error');
+            return;
+        }
+
+        const confirmDelete = document.createElement('div');
+        confirmDelete.className = 'fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4';
+        confirmDelete.innerHTML = `
+            <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Hapus Barang</h3>
+                <p class="text-gray-600 mb-6">Apakah Anda yakin ingin menghapus "${item.nama_barang}"?</p>
+                <div class="flex space-x-3">
+                    <button id="cancelDelete" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Batal</button>
+                    <button id="confirmDelete" class="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Hapus</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(confirmDelete);
+
+        document.getElementById('cancelDelete').addEventListener('click', function() {
+            confirmDelete.remove();
+        });
+
+        document.getElementById('confirmDelete').addEventListener('click', async function() {
+            confirmDelete.remove();
+            showLoading();
+
+            try {
+                const formData = new FormData();
+                formData.append('action', 'deleteBarang');
+                formData.append('id', id);
+                
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                hideLoading();
+
+                if (result.success) {
+                    showToast('Barang berhasil dihapus', 'success');
+                    loadBarang();
+                } else {
+                    showToast('Gagal menghapus barang: ' + result.message, 'error');
+                }
+            } catch (error) {
+                hideLoading();
+                showToast('Terjadi kesalahan', 'error');
+                console.error('Error:', error);
+            }
+        });
+    }
+
+
+    // Package Modal Functions (BARU)
+
+    async function openPackageModal(id = null) {
+        const modal = document.getElementById('packageModal');
+        const form = document.getElementById('packageForm');
+        const title = document.getElementById('packageModalTitle');
+        const equipmentContainer = document.getElementById('packageEquipmentSelection');
+        
+        form.reset();
+
+        if (barangData.length === 0) {
+            barangData = await loadSheetData('barang');
+        }
+
+        // Render equipment options with quantity inputs
+        equipmentContainer.innerHTML = barangData.map(item => `
+            <div class="flex items-center space-x-3 p-2 bg-white border border-gray-200 rounded-lg">
+                <input type="number" name="packageEquipmentCount" data-id="${item.id_barang}" min="0" value="0" class="w-20 px-2 py-1 border border-gray-300 rounded-lg text-sm text-center focus:ring-blue-500 focus:border-blue-500">
+                <span class="text-sm font-medium text-gray-700 flex-1">${item.nama_barang} (Total: ${item.jumlah_dimiliki})</span>
+            </div>
+        `).join('');
+
+        if (id) {
+            const item = packagesData.find(p => p.id_paket === id);
+            if (item) {
+                title.textContent = 'Edit Paket Peralatan';
+                document.getElementById('packageId').value = item.id_paket;
+                document.getElementById('namaPackage').value = item.nama_paket;
+                
+                try {
+                    const existingEquipment = JSON.parse(item.equipment_data);
+                    existingEquipment.forEach(eq => {
+                        const input = document.querySelector(`input[data-id="${eq.id}"]`);
+                        if (input) {
+                            input.value = parseInt(eq.jumlah) || 0;
+                        }
+                    });
+                } catch (e) {
+                    console.error('Error parsing equipment data:', e);
+                }
+            }
+        } else {
+            title.textContent = 'Tambah Paket Peralatan';
+            document.getElementById('packageId').value = '';
+        }
+
+        modal.classList.remove('hidden');
+    }
+
+    function closePackageModal() {
+        document.getElementById('packageModal').classList.add('hidden');
+    }
+
+    async function handlePackageSubmit(e) {
+        e.preventDefault();
+        showLoading();
+
+        const isEdit = document.getElementById('packageId').value;
+        const namaPackage = document.getElementById('namaPackage').value;
+        const packageEquipmentInputs = document.querySelectorAll('input[name="packageEquipmentCount"]');
+        const equipmentData = [];
+
+        packageEquipmentInputs.forEach(input => {
+            const id = input.dataset.id;
+            const jumlah = parseInt(input.value) || 0;
+            // Hanya masukkan barang yang jumlahnya lebih dari 0
+            if (jumlah > 0) { 
+                equipmentData.push({ id: id, jumlah: jumlah });
+            }
+        });
+        
+        if (equipmentData.length === 0) {
+            hideLoading();
+            showToast('Paket harus memiliki minimal 1 barang dengan jumlah > 0', 'error');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('action', isEdit ? 'updatePackage' : 'addPackage');
+        formData.append('id', isEdit);
+        formData.append('nama_paket', namaPackage);
+        formData.append('equipment_data', JSON.stringify(equipmentData));
+
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            hideLoading();
+
+            if (result.success) {
+                showToast(result.message || 'Data paket berhasil disimpan', 'success');
+                closePackageModal();
+                loadPackages(); 
+            } else {
+                showToast(result.message || 'Gagal menyimpan data paket', 'error');
+            }
+        } catch (error) {
+            hideLoading();
+            showToast('Terjadi kesalahan saat menyimpan data paket', 'error');
+            console.error('Error:', error);
+        }
+    }
+
+    function editPackage(id) {
+        openPackageModal(id);
+    }
+
+    async function deletePackage(id, name) {
+        const confirmDelete = confirm(`Apakah Anda yakin ingin menghapus paket "${name}"?`);
+        if (!confirmDelete) return;
+
+        showLoading();
+
+        try {
+            const formData = new FormData();
+            formData.append('action', 'deletePackage');
+            formData.append('id', id);
+            
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            hideLoading();
+
+            if (result.success) {
+                showToast('Paket berhasil dihapus', 'success');
+                loadPackages();
+            } else {
+                showToast('Gagal menghapus paket: ' + result.message, 'error');
+            }
+        } catch (error) {
+            hideLoading();
+            showToast('Terjadi kesalahan', 'error');
+            console.error('Error:', error);
+        }
+    }
+
+
+    // Kegiatan Modal Functions
+    async function openKegiatanModal(id = null) {
+        // ... (Fungsi dimodifikasi untuk Package) ...
+        const modal = document.getElementById('kegiatanModal');
+        const form = document.getElementById('kegiatanForm');
+        const title = document.getElementById('kegiatanModalTitle');
+        const adminFields = document.getElementById('adminOnlyFields');
+
+        form.reset();
+
+        // Show/hide admin-only fields
+        if (currentUser.role === 'admin') {
+            adminFields.classList.remove('hidden');
+            await loadStaffAndEquipmentOptions(); // Load staff dan packages
+        } else {
+            adminFields.classList.add('hidden');
+        }
+
+        if (id) {
+            const item = kegiatanData.find(k => k.id_kegiatan === id);
+            if (item) {
+                title.textContent = 'Edit Kegiatan';
+                document.getElementById('kegiatanId').value = item.id_kegiatan;
+                document.getElementById('namaKegiatan').value = item.nama_kegiatan;
+                document.getElementById('jenisKegiatan').value = item.jenis_kegiatan;
+                document.getElementById('lokasiKegiatan').value = item.lokasi_kegiatan;
+                document.getElementById('tanggalKegiatan').value = item.tanggal_kegiatan;
+                document.getElementById('jamMulai').value = item.jam_mulai;
+                document.getElementById('jamSelesai').value = item.jam_selesai;
+                document.getElementById('statusKegiatan').value = item.status_kegiatan;
+
+                // Load existing staff and package selection
+                if (currentUser.role === 'admin') {
+                    await loadExistingSelections(item.id_kegiatan);
+                }
+            }
+        } else {
+            title.textContent = 'Tambah Kegiatan';
+            document.getElementById('kegiatanId').value = '';
+            document.getElementById('statusKegiatan').value = 'Terjadwal';
+        }
+
+        modal.classList.remove('hidden');
+    }
+
+    async function loadStaffAndEquipmentOptions() {
+        // ... (Fungsi dimodifikasi untuk memuat Packages) ...
+        try {
+            const [allUsers, allPackages] = await Promise.all([
+                loadSheetData('users'),
+                loadSheetData('packages') // Memuat paket
+            ]);
+
+            packagesData = allPackages; // Update global packages data
+            const staffData = allUsers.filter(user => user.role === 'staff');
+
+            // Render Staff Selection
+            const staffContainer = document.getElementById('staffSelection');
+            staffContainer.innerHTML = staffData.map(staff => `
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" name="staff" value="${staff.id}" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <span class="text-sm text-gray-700">${staff.nama}</span>
+                </label>
+            `).join('');
+
+
+            // Render Package Selection (BARU)
+            const packageSelect = document.getElementById('packageSelect');
+            if (packageSelect) {
+                packageSelect.innerHTML = '<option value="">-- Tidak Ada Paket --</option>' + packagesData.map(pkg => `
+                    <option value="${pkg.id_paket}" data-equipment='${pkg.equipment_data}'>${pkg.nama_paket}</option>
+                `).join('');
+
+                // Listener untuk mengupdate hidden field ketika paket dipilih
+                packageSelect.onchange = function() {
+                    const selectedOption = this.options[this.selectedIndex];
+                    const equipmentDataJson = selectedOption.dataset.equipment;
+                    const equipmentList = equipmentDataJson ? JSON.parse(equipmentDataJson) : [];
+                    
+                    // Kita hanya butuh list ID barang untuk disimpan di kegiatan_equipment (relasi 1:N)
+                    // Detail jumlahnya disimpan di package.equipment_data
+                    const equipmentIds = equipmentList.map(eq => eq.id);
+                    document.getElementById('selectedEquipmentIds').value = JSON.stringify(equipmentIds);
+                };
+            }
+
+        } catch (error) {
+            console.error('Error loading options:', error);
+        }
+    }
+
+    async function loadExistingSelections(kegiatanId) {
+        // ... (Fungsi dimodifikasi untuk Package) ...
+        try {
+            // Load all relevant data
+            const [staffAssignments, equipmentAssignments, allPackages] = await Promise.all([
+                loadSheetData('kegiatan_staff'),
+                loadSheetData('kegiatan_equipment'), // Tetap ambil ini untuk mendapatkan ID Paket lama (equipment_id akan kita anggap ID Paket)
+                loadSheetData('packages') 
+            ]);
+
+            kegiatanStaffData = staffAssignments;
+            kegiatanEquipmentData = equipmentAssignments;
+            packagesData = allPackages;
+
+            // Load existing staff assignments
+            const assignedStaff = kegiatanStaffData
+                .filter(ks => ks.kegiatan_id === kegiatanId)
+                .map(ks => ks.staff_id);
+
+            // Check existing staff selections
+            document.querySelectorAll('input[name="staff"]').forEach(checkbox => {
+                checkbox.checked = assignedStaff.includes(checkbox.value);
+            });
+
+            // Load existing package selection (kegiatan_equipment akan menyimpan ID Paket)
+            const assignedPackageAssignment = kegiatanEquipmentData
+                .find(ke => ke.kegiatan_id === kegiatanId);
+            
+            const packageSelect = document.getElementById('packageSelect');
+            if (packageSelect) {
+                const packageId = assignedPackageAssignment ? assignedPackageAssignment.equipment_id : '';
+                packageSelect.value = packageId;
+                
+                // Trigger change event manually to update the hidden field
+                // Gunakan timeout singkat untuk memastikan DOM sudah ter-render
+                setTimeout(() => {
+                    const event = new Event('change');
+                    packageSelect.dispatchEvent(event);
+                }, 50);
+                
+            }
+
+        } catch (error) {
+            console.error('Error loading existing selections:', error);
+        }
+    }
+
+    function closeKegiatanModal() {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        document.getElementById('kegiatanModal').classList.add('hidden');
+    }
+
+    async function handleKegiatanSubmit(e) {
+        // ... (Fungsi dimodifikasi untuk Package) ...
+        e.preventDefault();
+        showLoading();
+
+        const formData = new FormData();
+        formData.append('action', document.getElementById('kegiatanId').value ? 'updateKegiatan' : 'addKegiatan');
+        formData.append('id', document.getElementById('kegiatanId').value);
+        formData.append('nama_kegiatan', document.getElementById('namaKegiatan').value);
+        formData.append('jenis_kegiatan', document.getElementById('jenisKegiatan').value);
+        formData.append('lokasi_kegiatan', document.getElementById('lokasiKegiatan').value);
+        formData.append('tanggal_kegiatan', document.getElementById('tanggalKegiatan').value);
+        formData.append('jam_mulai', document.getElementById('jamMulai').value);
+        formData.append('jam_selesai', document.getElementById('jamSelesai').value);
+        formData.append('status_kegiatan', document.getElementById('statusKegiatan').value);
+
+        // Add staff and package selection for admin
+        if (currentUser.role === 'admin') {
+            const selectedStaff = Array.from(document.querySelectorAll('input[name="staff"]:checked')).map(cb => cb.value);
+            // Ambil ID Paket yang dipilih (hanya satu)
+            const selectedPackageId = document.getElementById('packageSelect').value; 
+            
+            // equipment sekarang berisi ID Paket
+            formData.append('staff', JSON.stringify(selectedStaff));
+            formData.append('equipment', JSON.stringify(selectedPackageId ? [selectedPackageId] : [])); // Kirim ID Paket sebagai array 1 elemen
+        }
+
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            hideLoading();
+
+            if (result.success) {
+                showToast(result.message || 'Data kegiatan berhasil disimpan', 'success');
+                closeKegiatanModal();
+                loadKegiatan(); // Reload data
+            } else {
+                showToast(result.message || 'Gagal menyimpan data kegiatan', 'error');
+            }
+        } catch (error) {
+            hideLoading();
+            showToast('Terjadi kesalahan saat menyimpan data', 'error');
+            console.error('Error:', error);
+        }
+    }
+
+    // Finish Kegiatan Function
+    async function finishKegiatan(id) {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        const kegiatan = kegiatanData.find(k => k.id_kegiatan === id);
+        if (!kegiatan) return;
+
+        // Pencegahan jika staf belum mengkonfirmasi barang
+        const staffConfirmed = equipmentConfirmationsData.some(
+             ec => ec.kegiatan_id === id && ec.staff_id === currentUser.id
+        );
+
+        if (!staffConfirmed) {
+            showToast('Anda harus mengkonfirmasi peminjaman peralatan sebelum menyelesaikan kegiatan.', 'error');
+            return;
+        }
+
+        const confirmFinish = document.createElement('div');
+        confirmFinish.className = 'fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4';
+        confirmFinish.innerHTML = `
+            <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Selesaikan Kegiatan</h3>
+                <p class="text-gray-600 mb-6">Apakah Anda yakin ingin menyelesaikan kegiatan "${kegiatan.nama_kegiatan}"? Semua barang yang telah dipinjam akan dicatat di Barang Masuk dan dikembalikan ke inventaris.</p>
+                <div class="flex space-x-3">
+                    <button id="cancelFinish" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Batal</button>
+                    <button id="confirmFinish" class="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">Selesaikan</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(confirmFinish);
+
+        document.getElementById('cancelFinish').addEventListener('click', function() {
+            confirmFinish.remove();
+        });
+
+        document.getElementById('confirmFinish').addEventListener('click', async function() {
+            confirmFinish.remove();
+            showLoading();
+
+            try {
+                const formData = new FormData();
+                formData.append('action', 'finishKegiatan');
+                formData.append('kegiatan_id', id);
+                formData.append('staff_id', currentUser.id);
+                formData.append('staff_name', currentUser.nama);
+                
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                hideLoading();
+
+                if (result.success) {
+                    showToast('Kegiatan berhasil diselesaikan dan barang masuk ke inventaris', 'success');
+                    loadKegiatan();
+                } else {
+                    showToast('Gagal menyelesaikan kegiatan: ' + result.message, 'error');
+                }
+            } catch (error) {
+                hideLoading();
+                showToast('Terjadi kesalahan', 'error');
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    // Staff Detail Functions
+    async function viewKegiatanDetail(id) {
+        // ... (Fungsi dimodifikasi untuk Package) ...
+        try {
+            showLoading();
+
+            // Load all necessary data concurrently
+            const [equipmentAssignmentData, confirmationsData, allBarangData, allBarangKeluarData, allPackages] = await Promise.all([
+                loadSheetData('kegiatan_equipment'),
+                loadSheetData('equipment_confirmations'),
+                loadSheetData('barang'),
+                loadSheetData('barang_keluar'),
+                loadSheetData('packages') // Load paket
+            ]);
+            
+            kegiatanEquipmentData = equipmentAssignmentData;
+            equipmentConfirmationsData = confirmationsData;
+            barangData = allBarangData; 
+            packagesData = allPackages;
+
+            const kegiatan = kegiatanData.find(k => k.id_kegiatan === id);
+            if (!kegiatan) return;
+
+            // Get assigned Package ID for this kegiatan (equipment_id dianggap package id)
+            const assignedPackageAssignment = kegiatanEquipmentData.find(ke => ke.kegiatan_id === id);
+            const assignedPackageId = assignedPackageAssignment ? assignedPackageAssignment.equipment_id : null;
+            const assignedPackage = assignedPackageId ? packagesData.find(p => p.id_paket === assignedPackageId) : null;
+            
+            // Ambil detail barang dari paket yang dipilih
+            let assignedEquipmentDetails = [];
+            if (assignedPackage) {
+                try {
+                    assignedEquipmentDetails = JSON.parse(assignedPackage.equipment_data).filter(item => (parseInt(item.jumlah) || 0) > 0);
+                } catch (e) {
+                    console.error('Error parsing package equipment data:', e);
+                }
+            }
+
+
+            // Get confirmed equipment by current staff (hanya ID)
+            const confirmedEquipmentIds = equipmentConfirmationsData
+                .filter(ec => ec.kegiatan_id === id && ec.staff_id === currentUser.id)
+                .map(ec => ec.equipment_id);
+                
+            // Dapatkan jumlah barang yang sudah dipinjam (Barang Keluar) untuk kegiatan ini
+            const usedEquipmentCounts = {};
+            const allBarangKeluarData = await loadSheetData('barang_keluar'); // Load di sini untuk data terbaru
+            allBarangKeluarData.filter(item => item.kegiatan_id === id).forEach(item => {
+                usedEquipmentCounts[item.equipment_id] = (usedEquipmentCounts[item.equipment_id] || 0) + parseInt(item.jumlah || 1);
+            });
+
+            // Populate kegiatan info
+            document.getElementById('staffDetailTitle').textContent = `Detail Kegiatan: ${kegiatan.nama_kegiatan}`;
+            document.getElementById('kegiatanInfo').innerHTML = `
+                <h4 class="font-semibold text-gray-900 mb-2">${kegiatan.nama_kegiatan}</h4>
+                <p class="text-sm text-blue-600 mb-3 font-semibold">Paket Terpilih: ${assignedPackage ? assignedPackage.nama_paket : 'Tidak Ada Paket'}</p>
+                <div class="grid grid-cols-2 gap-4 text-sm text-gray-600">
+                    <div><strong>Jenis:</strong> ${kegiatan.jenis_kegiatan}</div>
+                    <div><strong>Lokasi:</strong> ${kegiatan.lokasi_kegiatan}</div>
+                    <div><strong>Tanggal:</strong> ${formatDate(kegiatan.tanggal_kegiatan)}</div>
+                    <div><strong>Waktu:</strong> ${kegiatan.jam_mulai} - ${kegiatan.jam_selesai}</div>
+                    <div class="col-span-2"><strong>Status:</strong> <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusKegiatanBadgeClass(kegiatan.status_kegiatan)}">${kegiatan.status_kegiatan}</span></div>
+                </div>
+            `;
+
+            // Populate equipment confirmation
+            const equipmentContainer = document.getElementById('equipmentConfirmation');
+            const confirmEquipmentBtn = document.getElementById('confirmEquipmentBtn');
+            
+            const isFinalized = kegiatan.status_kegiatan === 'Selesai' || kegiatan.status_kegiatan === 'Dibatalkan';
+            
+            if (assignedEquipmentDetails.length > 0) {
+                equipmentContainer.innerHTML = assignedEquipmentDetails.map(packageItem => {
+                    const equipmentId = packageItem.id;
+                    const requiredQuantity = parseInt(packageItem.jumlah) || 0;
+                    const equipment = barangData.find(b => b.id_barang === equipmentId);
+                    
+                    if (!equipment) return '';
+
+                    // Cek apakah barang yang dipinjam sama dengan package id (sebelumnya hanya 1 id)
+                    const isConfirmed = confirmedEquipmentIds.includes(assignedPackageId);
+                    const currentUsageForThisActivity = usedEquipmentCounts[equipmentId] || 0; 
+                    const totalOwned = parseInt(equipment.jumlah_dimiliki) || 0;
+                    const totalUsage = parseInt(equipment.jumlah_digunakan) || 0;
+                    
+                    // Stock that is available, excluding what is currently being used by *this* activity
+                    const availableStockExcludingThisActivity = totalOwned - (totalUsage - currentUsageForThisActivity);
+
+                    let confirmationStatus = isConfirmed ? '<span class="text-xs text-green-600 font-medium">Dikonfirmasi</span>' : '';
+                    if (currentUsageForThisActivity > 0) {
+                        confirmationStatus = '<span class="text-xs text-blue-600 font-medium">Sedang Digunakan</span>';
+                    }
+                    
+                    // Cek jika jumlah yang diminta melebihi yang tersedia
+                    const stockWarning = (requiredQuantity > availableStockExcludingThisActivity) 
+                        ? `<p class="text-xs text-red-500 font-semibold">PERINGATAN: Kuantitas (${requiredQuantity}) Melebihi Stok Tersedia (${availableStockExcludingThisActivity})!</p>`
+                        : '';
+                        
+                    return `
+                        <div class="flex items-start space-x-3 p-3 border rounded-lg ${isConfirmed ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}">
+                            <div class="flex-1">
+                                <span class="text-sm font-medium text-gray-900">${equipment.nama_barang}</span>
+                                <p class="text-xs text-gray-500 font-bold">Kuantitas Pinjam: ${requiredQuantity}</p>
+                                <p class="text-xs text-gray-500">Stok Tersedia: ${availableStockExcludingThisActivity}</p>
+                                ${stockWarning}
+                                <input type="hidden" name="confirmEquipmentPackage" data-id="${equipmentId}" value="${requiredQuantity}">
+                            </div>
+                            ${confirmationStatus}
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                equipmentContainer.innerHTML = '<p class="text-gray-500 text-center py-4">Tidak ada peralatan yang dibutuhkan</p>';
+            }
+
+            // Button visibility/text adjustment (HANYA TAMPIL JIKA ADA PAKET TERPILIH)
+            if (isFinalized || assignedEquipmentDetails.length === 0 || !assignedPackageId) {
+                confirmEquipmentBtn.classList.add('hidden');
+            } else if (kegiatan.status_kegiatan === 'Terjadwal' || kegiatan.status_kegiatan === 'Berlangsung') {
+                confirmEquipmentBtn.classList.remove('hidden');
+                confirmEquipmentBtn.textContent = 'Konfirmasi Peminjaman Peralatan (Sesuai Paket)';
+                confirmEquipmentBtn.classList.remove('bg-green-500', 'hover:bg-green-600');
+                confirmEquipmentBtn.classList.add('bg-blue-500', 'hover:bg-blue-600');
+            }
+
+            // Store current kegiatan ID and Package ID for confirmation
+            document.getElementById('staffDetailModal').dataset.kegiatanId = id;
+            document.getElementById('staffDetailModal').dataset.packageId = assignedPackageId; // Store Package ID here!
+            document.getElementById('staffDetailModal').classList.remove('hidden');
+
+            hideLoading();
+        } catch (error) {
+            hideLoading();
+            console.error('Error loading kegiatan details:', error);
+            showToast('Gagal memuat detail kegiatan', 'error');
+        }
+    }
+
+    function closeStaffDetailModal() {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        document.getElementById('staffDetailModal').classList.add('hidden');
+    }
+
+    // Handle Equipment Confirmation (Menggunakan Paket ID)
+    async function handleEquipmentConfirmation() {
+        showLoading();
+
+        const kegiatanId = document.getElementById('staffDetailModal').dataset.kegiatanId;
+        const packageId = document.getElementById('staffDetailModal').dataset.packageId; // AMBIL PACKAGE ID
+
+        if (!packageId) {
+            hideLoading();
+            showToast('Gagal: ID Paket tidak ditemukan.', 'error');
+            return;
+        }
+
+        // Cek jika ada item di paket yang melebihi stok yang tersedia saat ini
+        const inputs = document.querySelectorAll('input[name="confirmEquipmentPackage"]');
+        let validationError = false;
+        
+        // Perlu memuat data barang keluar lagi untuk cek ketersediaan
+        const allBarangKeluarData = await loadSheetData('barang_keluar');
+
+        inputs.forEach(input => {
+            const requiredQuantity = parseInt(input.value) || 0;
+            const barang = barangData.find(b => b.id_barang === input.dataset.id);
+            
+            // Hitung usage saat ini untuk kegiatan ini (yang akan di-rollback)
+            const currentUsageForThisActivity = allBarangKeluarData.filter(item => item.kegiatan_id === kegiatanId && item.equipment_id === input.dataset.id).reduce((sum, item) => sum + (parseInt(item.jumlah) || 0), 0);
+            
+            const totalOwned = parseInt(barang.jumlah_dimiliki) || 0;
+            const totalUsage = parseInt(barang.jumlah_digunakan) || 0;
+            
+            // Stok tersedia exklusi penggunaan di kegiatan ini (karena akan di-rollback)
+            const availableStockExcludingThisActivity = totalOwned - (totalUsage - currentUsageForThisActivity);
+
+            if (requiredQuantity > availableStockExcludingThisActivity) {
+                validationError = true;
+                showToast(`Gagal pinjam ${barang.nama_barang}: Kuantitas (${requiredQuantity}) melebihi stok tersedia (${availableStockExcludingThisActivity}).`, 'error');
+            }
+        });
+
+        if (validationError) {
+            hideLoading();
+            return;
+        }
+
+
+        const formData = new FormData();
+        formData.append('action', 'confirmEquipment');
+        formData.append('kegiatan_id', kegiatanId);
+        formData.append('staff_id', currentUser.id);
+        formData.append('staff_name', currentUser.nama);
+        formData.append('package_id', packageId); // KIRIM ID PAKET BUKAN DATA EQUIPMENT
+
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            hideLoading();
+
+            if (result.success) {
+                showToast(result.message || 'Konfirmasi peralatan berhasil disimpan dan inventaris diperbarui', 'success');
+                closeStaffDetailModal();
+                loadKegiatan(); 
+            } else {
+                showToast('Gagal menyimpan konfirmasi peralatan: ' + result.message, 'error');
+            }
+        } catch (error) {
+            hideLoading();
+            showToast('Terjadi kesalahan saat menyimpan konfirmasi', 'error');
+            console.error('Error:', error);
+        }
+    }
+
+
+    function editKegiatan(id) {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        openKegiatanModal(id);
+    }
+
+    async function deleteKegiatan(id) {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        const item = kegiatanData.find(k => k.id_kegiatan === id);
+        if (!item) return;
+
+        // Pencegahan penghapusan kegiatan yang sedang berjalan atau selesai
+        if (item.status_kegiatan === 'Berlangsung' || item.status_kegiatan === 'Selesai') {
+             showToast('Tidak dapat menghapus kegiatan yang sedang Berlangsung atau Selesai.', 'error');
+             return;
+        }
+
+        const confirmDelete = document.createElement('div');
+        confirmDelete.className = 'fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4';
+        confirmDelete.innerHTML = `
+            <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Hapus Kegiatan</h3>
+                <p class="text-gray-600 mb-6">Apakah Anda yakin ingin menghapus "${item.nama_kegiatan}"? Semua data relasi (staff, equipment) juga akan dihapus.</p>
+                <div class="flex space-x-3">
+                    <button id="cancelDelete" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Batal</button>
+                    <button id="confirmDelete" class="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Hapus</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(confirmDelete);
+
+        document.getElementById('cancelDelete').addEventListener('click', function() {
+            confirmDelete.remove();
+        });
+
+        document.getElementById('confirmDelete').addEventListener('click', async function() {
+            confirmDelete.remove();
+            showLoading();
+
+            try {
+                const formData = new FormData();
+                formData.append('action', 'deleteKegiatan');
+                formData.append('id', id);
+                
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                hideLoading();
+
+                if (result.success) {
+                    showToast('Kegiatan berhasil dihapus', 'success');
+                    loadKegiatan();
+                } else {
+                    showToast('Gagal menghapus kegiatan: ' + result.message, 'error');
+                }
+            } catch (error) {
+                hideLoading();
+                showToast('Terjadi kesalahan', 'error');
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    // User Modal Functions
+    function openUserModal(id = null) {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        const modal = document.getElementById('userModal');
+        const form = document.getElementById('userForm');
+        const title = document.getElementById('userModalTitle');
+        const passwordField = document.getElementById('passwordUser');
+
+        form.reset();
+
+        if (id) {
+            const user = usersData.find(u => u.id === id);
+            if (user) {
+                title.textContent = 'Edit Pengguna';
+                document.getElementById('userId').value = user.id;
+                document.getElementById('namaUser').value = user.nama;
+                document.getElementById('usernameUser').value = user.username;
+                document.getElementById('roleUser').value = user.role;
+                passwordField.required = false;
+            }
+        } else {
+            title.textContent = 'Tambah Pengguna';
+            document.getElementById('userId').value = '';
+            passwordField.required = true;
+        }
+
+        modal.classList.remove('hidden');
+    }
+
+    function closeUserModal() {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        document.getElementById('userModal').classList.add('hidden');
+    }
+
+    async function handleUserSubmit(e) {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        e.preventDefault();
+        showLoading();
+
+        const formData = new FormData();
+        formData.append('action', document.getElementById('userId').value ? 'updateUser' : 'addUser');
+        formData.append('id', document.getElementById('userId').value);
+        formData.append('nama', document.getElementById('namaUser').value);
+        formData.append('username', document.getElementById('usernameUser').value);
+        formData.append('password', document.getElementById('passwordUser').value);
+        formData.append('role', document.getElementById('roleUser').value);
+
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            hideLoading();
+
+            if (result.success) {
+                showToast(result.message || 'Data pengguna berhasil disimpan', 'success');
+                closeUserModal();
+                loadUsers(); // Reload data
+            } else {
+                showToast(result.message || 'Gagal menyimpan data pengguna', 'error');
+            }
+        } catch (error) {
+            hideLoading();
+            showToast('Terjadi kesalahan saat menyimpan data', 'error');
+            console.error('Error:', error);
+        }
+    }
+
+    function editUser(id) {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        openUserModal(id);
+    }
+
+    async function deleteUser(id) {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        const user = usersData.find(u => u.id === id);
+        if (!user) return;
+
+        if (user.id === currentUser.id) {
+            showToast('Tidak dapat menghapus akun sendiri', 'error');
+            return;
+        }
+
+        const confirmDelete = document.createElement('div');
+        confirmDelete.className = 'fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4';
+        confirmDelete.innerHTML = `
+            <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Hapus Pengguna</h3>
+                <p class="text-gray-600 mb-6">Apakah Anda yakin ingin menghapus "${user.nama}"?</p>
+                <div class="flex space-x-3">
+                    <button id="cancelDelete" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Batal</button>
+                    <button id="confirmDelete" class="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Hapus</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(confirmDelete);
+
+        document.getElementById('cancelDelete').addEventListener('click', function() {
+            confirmDelete.remove();
+        });
+
+        document.getElementById('confirmDelete').addEventListener('click', async function() {
+            confirmDelete.remove();
+            showLoading();
+
+            try {
+                const formData = new FormData();
+                formData.append('action', 'deleteUser');
+                formData.append('id', id);
+
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                hideLoading();
+
+                if (result.success) {
+                    showToast('Pengguna berhasil dihapus', 'success');
+                    loadUsers();
+                } else {
+                    showToast('Gagal menghapus pengguna: ' + result.message, 'error');
+                }
+            } catch (error) {
+                hideLoading();
+                showToast('Terjadi kesalahan', 'error');
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    // Utility Functions
+    function showToast(message, type = 'success') {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        const toastIcon = document.getElementById('toastIcon');
+
+        const icons = {
+            success: '<svg class="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+            error: '<svg class="h-6 w-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
+        };
+
+        toastIcon.innerHTML = icons[type];
+        toastMessage.textContent = message;
+        toast.classList.remove('hidden');
+
+        setTimeout(() => {
+            toast.classList.add('hidden');
+        }, 3000);
+    }
+
+    function showLoading() {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        document.getElementById('loadingOverlay').classList.remove('hidden');
+    }
+
+    function hideLoading() {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        document.getElementById('loadingOverlay').classList.add('hidden');
+    }
+
+    function getStatusBadgeClass(status) {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        const classes = {
+            'Tersedia': 'bg-green-100 text-green-800',
+            'Digunakan': 'bg-blue-100 text-blue-800',
+            'Maintenance': 'bg-yellow-100 text-yellow-800'
+        };
+        return classes[status] || 'bg-gray-100 text-gray-800';
+    }
+
+    function getStatusKegiatanBadgeClass(status) {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        const classes = {
+            'Terjadwal': 'bg-blue-100 text-blue-800',
+            'Berlangsung': 'bg-green-100 text-green-800',
+            'Selesai': 'bg-gray-100 text-gray-800',
+            'Dibatalkan': 'bg-red-100 text-red-800'
+        };
+        return classes[status] || 'bg-gray-100 text-gray-800';
+    }
+
+    function formatDate(dateString) {
+        // ... (Fungsi tidak berubah, kode lama sudah benar) ...
+        if (!dateString || dateString === '') return 'N/A';
+        
+        // Handle different date formats
+        let date;
+        if (dateString.includes('/')) {
+            // Assume DD/MM/YYYY format
+            const parts = dateString.split('/');
+            if (parts.length === 3) {
+                // new Date(year, monthIndex, day)
+                date = new Date(parts[2], parts[1] - 1, parts[0]);
+            }
+        } else if (dateString.includes('-')) {
+            // Handle YYYY-MM-DD format (or ISO string if includes T)
+            date = new Date(dateString);
+        } else {
+            // Try to parse as is
+            date = new Date(dateString);
+        }
+        
+        // Check if date is valid
+        if (isNaN(date.getTime())) {
+            return dateString; // Return original string if can't parse
+        }
+        
+        // Check if it's just a date or a full timestamp
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        // Check if the string contains time components
+        if (dateString.includes(':') || (dateString.includes('T') && dateString.split('T')[1].includes(':'))) { 
+            options.hour = '2-digit';
+            options.minute = '2-digit';
+            options.second = '2-digit'; // Tambahkan detik untuk akurasi log
+        }
+
+        try {
+             return date.toLocaleDateString('id-ID', options);
+        } catch (e) {
+            return dateString;
+        }
+    }
+  </script>
+ </body>
+</html>
