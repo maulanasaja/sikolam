@@ -2720,47 +2720,49 @@ window.deletePaket = deletePaket;
     // Handle Equipment Confirmation (Perbaikan Logika Penggunaan)
     async function handleEquipmentConfirmation() {
         showLoading();
-
         const kegiatanId = document.getElementById('staffDetailModal').dataset.kegiatanId;
-        const inputs = document.querySelectorAll('input[name="confirmEquipment"]:not(:disabled)');
+        const inputs = document.querySelectorAll('input[name="confirmEquipment"]'); // Ambil semua input
         const equipmentData = [];
         let validationError = false;
 
         // Dapatkan ID Paket untuk menentukan apakah menggunakan paket
         const kegiatan = kegiatanData.find(k => k.id_kegiatan === kegiatanId);
         const selectedPaketId = kegiatan.paket_id;
-        const isUsingPackage = !!selectedPaketId; 
+        const isUsingPackage = !!selectedPaketId; 
         const selectedPackage = isUsingPackage ? paketEquipmentData.find(p => p.id_paket === selectedPaketId) : null;
 
+        // Gunakan Map untuk menyimpan jumlah barang yang dibutuhkan dari paket (jika ada)
+        const packageQuantities = new Map();
+        if (selectedPackage) {
+        selectedPackage.items.forEach(item => packageQuantities.set(item.id, item.jumlah));
+        }
+
         inputs.forEach(input => {
-            const id = input.dataset.id;
-            const jumlah = parseInt(input.value) || 0;
+        const id = input.dataset.id;
+        let jumlah;
+                    
+        if (isUsingPackage && packageQuantities.has(id)) {
+        // Jika menggunakan paket, gunakan jumlah dari data paket yang sudah dihitung
+        jumlah = packageQuantities.get(id);
+        } else {
+        // Jika tidak menggunakan paket (manual), gunakan nilai dari input (yang bisa diubah staff)
+        jumlah = parseInt(input.value) || 0;
+         }
 
-            if (isUsingPackage && selectedPackage) {
-                // Jika menggunakan paket, ambil jumlah dari data paket yang sudah dihitung di viewKegiatanDetail
-                const packageItem = selectedPackage.items.find(item => item.id === id);
-                jumlah = packageItem ? packageItem.jumlah : 0;
-                // Gunakan nilai dari input sebagai nilai default jika data paket tidak ada (safety net)
-                if (jumlah === 0) {
-                    jumlah = parseInt(input.value) || 0;
-                }
-            } else {
-                // Jika tidak menggunakan paket (manual), gunakan nilai dari input yang bisa diubah staff
-                if (!input.disabled) { // Hanya ambil nilai dari input yang tidak disabled (manual input)
-                    jumlah = parseInt(input.value) || 0;
-                }
-            }
             const max = parseInt(input.max) || 0;
-            
-            if (jumlah < 0) {
-                validationError = true;
-                showToast(`Jumlah pinjam untuk ${id} tidak boleh negatif.`, 'error');
-            } else if (jumlah > max) {
-                validationError = true;
-                showToast(`Jumlah pinjam untuk ${id} melebihi batas tersedia (${max}).`, 'error');
-            }
 
-            equipmentData.push({ id, jumlah });
+            // Validasi dilakukan untuk input manual dan juga sebagai safety check untuk paket
+            if (jumlah < 0) {
+             validationError = true;
+                showToast(`Jumlah pinjam untuk ${id} tidak boleh negatif.`, 'error');
+             } 
+             // Khusus untuk paket, biarkan admin yang mengatasi jika jumlah > max. Staff hanya mengkonfirmasi.
+             else if (!isUsingPackage && jumlah > max) { 
+                 validationError = true;
+                 showToast(`Jumlah pinjam untuk ${id} melebihi batas tersedia (${max}).`, 'error');
+             }
+
+             equipmentData.push({ id, jumlah });
         });
 
         if (validationError) {
